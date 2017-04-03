@@ -30,6 +30,7 @@ import javax.persistence.Transient;
     , @NamedQuery(name = "Room.findByHotelId", query = "SELECT r FROM Room r WHERE r.roomPK.hotelId = :hotelId")
     , @NamedQuery(name = "Room.findByRoomType", query = "SELECT r FROM Room r WHERE r.roomType = :roomType")
     , @NamedQuery(name = "Room.findByRoomPrice", query = "SELECT r FROM Room r WHERE r.roomPrice = :roomPrice")
+    , @NamedQuery(name = "Room.findByRoomCapacity", query = "SELECT r FROM Room r WHERE r.roomCapacity = :roomCapacity")
     , @NamedQuery(name = "Room.findByRoomDescription", query = "SELECT r FROM Room r WHERE r.roomDescription = :roomDescription")})
 public class Room implements Serializable {
 
@@ -47,6 +48,8 @@ public class Room implements Serializable {
     private String roomPrice;
     @Column(name = "ROOM_DESCRIPTION")
     private String roomDescription;
+    @Column(name = "GUEST_CAPICITY")
+    private int roomCapacity;
 
     public Room() {
     }
@@ -81,6 +84,14 @@ public class Room implements Serializable {
         String oldRoomType = this.roomType;
         this.roomType = roomType;
         changeSupport.firePropertyChange("roomType", oldRoomType, roomType);
+    }
+
+    public int getRoomCapacity() {
+        return roomCapacity;
+    }
+
+    public void setRoomCapacity(int roomCapacity) {
+        this.roomCapacity = roomCapacity;
     }
 
     public String getRoomPrice() {
@@ -122,6 +133,7 @@ public class Room implements Serializable {
         }
         return true;
     }
+
 
     @Override
     public String toString() {

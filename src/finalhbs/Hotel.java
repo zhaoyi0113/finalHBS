@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 public class Hotel extends javax.swing.JFrame {
 
     private Connection conn;
+    private Connection conn2;
     private HotelTableModel tableModel;
     private RoomTableModel roomTableModel;
 
@@ -36,6 +37,7 @@ public class Hotel extends javax.swing.JFrame {
         try {
             DriverManager.registerDriver(new OracleDriver());
             conn = DriverManager.getConnection("jdbc:oracle:thin:@hippo.its.monash.edu.au:1521:FIT5148a", "S27143392", "student");
+            conn2 = DriverManager.getConnection("jdbc:oracle:thin:@hippo.its.monash.edu.au:1521:FIT5148B", "S27143392", "student");
             System.out.println("Connected to Oracle");
         } catch (SQLException f) {
             System.out.println("error in connection");
@@ -79,6 +81,7 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
+        this.jTableRoom.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTableRoom.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -90,6 +93,7 @@ public class Hotel extends javax.swing.JFrame {
                 tfRoomId.setText(room.getRoomPK().getRoomNumber().intValue() + "");
                 tfRoomDesc.setText(room.getRoomDescription());
                 tfRoomPrice.setText(room.getRoomPrice() + "");
+                tfRoomCapacity.setText(room.getRoomCapacity()+"");
             }
         });
     }
@@ -1179,7 +1183,7 @@ public class Hotel extends javax.swing.JFrame {
 
                 stmt = conn.createStatement();
                 stmt.executeUpdate("insert into hotel (HOTEL_ID, HOTEL_NAME, ROOM_CAPACITY,HOTEL_TIER, CONSTRUCTION_YEAR,EMAIL_ADDRESS, CONTACT_NUMBER, ADDRESS,CITY,COUNTRY ) VALUES ('" + tfHotelId.getText() + "','" + tfHotelNAme.getText() + "','" + tfHotelCapacity.getText() + "','" + tfHotelTier.getSelectedItem() + "','" + tfHotelconsyear.getText() + "','" + tfHotelEmail.getText() + "','" + tfHotelContactNo.getText() + "','" + tfHotelAddress.getText() + "','" + tfHotelCity.getText() + "','" + tfHotelCountry.getText() + "')");
-                this.updateTable();
+                this.updateHotelTable();
                 JOptionPane.showMessageDialog(null, "Inserted Successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -1207,7 +1211,7 @@ public class Hotel extends javax.swing.JFrame {
                 Hotel_1 hotel = this.hotel_1List.get(this.jTableHotel.getSelectedRow());
                 hotel.setHotelName(tfHotelNAme.getText());
                 this.entityManager.refresh(hotel);
-                updateTable();
+                updateHotelTable();
 
                 JOptionPane.showMessageDialog(null, "Updated Successfully!");
             } catch (Exception ex) {
@@ -1219,7 +1223,7 @@ public class Hotel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 
-    private void updateTable() {
+    private void updateHotelTable() {
         hotel_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT h FROM Hotel_1 h");
 
         hotel_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : hotel_1Query.getResultList();
@@ -1232,7 +1236,7 @@ public class Hotel extends javax.swing.JFrame {
 
             stmt = conn.createStatement();
             stmt.executeUpdate("delete from HOTEL where HOTEL_ID='" + tfHotelId.getText() + "'");
-            updateTable();
+            updateHotelTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1257,6 +1261,7 @@ public class Hotel extends javax.swing.JFrame {
 
     private void tfHotelTierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfHotelTierActionPerformed
         // TODO add your handling code here:
+
     }//GEN-LAST:event_tfHotelTierActionPerformed
 
     private void jButtonInsertRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertRoomActionPerformed
@@ -1267,8 +1272,24 @@ public class Hotel extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonUpdateRoomActionPerformed
 
+    private void updateRoomTable(){
+        this.roomTableModel.fireTableDataChanged();
+    }
+
     private void jButtonDeleteRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteRoomActionPerformed
         // TODO add your handling code here:
+        int index = jTableRoom.getSelectedRow();
+        Statement stmt;
+        try {
+
+            stmt = conn2.createStatement();
+            stmt.executeUpdate("delete from ROOM where ROOM_NUMBER=" + tfRoomId.getText());
+            updateRoomTable();
+            JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }//GEN-LAST:event_jButtonDeleteRoomActionPerformed
 
     private void jButtonSearchRoomByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchRoomByActionPerformed
@@ -1554,7 +1575,7 @@ public class Hotel extends javax.swing.JFrame {
 
     class RoomTableModel extends AbstractTableModel {
 
-        private String columns[] = {"Room ID", "Room Desc", "Room Price", "Room Capacity"};
+        private String columns[] = {"Room ID", "Room Desc", "Room Price", "Room Capacity","Hotel ID","Room Type"};
 
         @Override
         public int getRowCount() {
@@ -1574,13 +1595,19 @@ public class Hotel extends javax.swing.JFrame {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             Room room = roomList.get(rowIndex);
-            switch (rowIndex) {
+            switch (columnIndex) {
                 case 0:
                     return room.getRoomPK().getRoomNumber();
                 case 1:
                     return room.getRoomDescription();
                 case 2:
                     return room.getRoomPrice();
+                case 3:
+                    return room.getRoomCapacity();
+                case 4:
+                    return room.getRoomPK().getHotelId();
+                case 5:
+                    return room.getRoomType();
             }
             return null;
         }
