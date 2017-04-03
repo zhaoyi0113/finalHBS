@@ -9,6 +9,10 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import oracle.jdbc.*;
 import javax.swing.table.DefaultTableModel;
 /**
@@ -24,7 +28,6 @@ public class Hotel extends javax.swing.JFrame {
     public Hotel() {
         initComponents();
         
-
         try {
             DriverManager.registerDriver (new OracleDriver());
             conn = DriverManager.getConnection("jdbc:oracle:thin:@hippo.its.monash.edu.au:1521:FIT5148a", "S27143392", "student");
@@ -34,7 +37,27 @@ public class Hotel extends javax.swing.JFrame {
         {
         System.out.println("error in connection");
         }
+        this.addActionListeners();
 
+    }
+    
+    /**
+     * add action listeners on components
+     */
+    private void addActionListeners(){
+        this.jTableHotel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.jTableHotel.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int index = jTableHotel.getSelectedRow();
+                if(index<0){
+                    return;
+                }
+                String tier = (String)jTableHotel.getModel().getValueAt(index, 2);
+                tfHotelTier.setSelectedItem(tier);
+                
+            }
+        });
     }
 
     /**
@@ -1242,7 +1265,7 @@ public class Hotel extends javax.swing.JFrame {
                 
                 stmt = conn.createStatement();
                 stmt.executeUpdate("insert into hotel (HOTEL_ID, HOTEL_NAME, ROOM_CAPACITY,HOTEL_TIER, CONSTRUCTION_YEAR,EMAIL_ADDRESS, CONTACT_NUMBER, ADDRESS,CITY,COUNTRY ) VALUES ('"+ tfHotelId.getText()+"','"+tfHotelNAme.getText()+"','"+tfHotelCapacity.getText()+"','"+tfHotelTier.getSelectedItem()+"','"+ tfHotelconsyear.getText() +"','"+ tfHotelEmail.getText()+"','"+tfHotelContactNo.getText()+"','"+ tfHotelAddress.getText() +"','"+tfHotelCity.getText()+"','"+tfHotelCountry.getText()+"')");
-
+                
                 JOptionPane.showMessageDialog(null,"Inserted Successfully!");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -1265,6 +1288,7 @@ public class Hotel extends javax.swing.JFrame {
                 
                 stmt = conn.createStatement();
                 stmt.executeUpdate("update HOTEL set  HOTEL_NAME='"+tfHotelNAme.getText()+"', HOTEL_TIER='"+tfHotelTier.getSelectedItem().toString()+"', CONSTRUCTION_YEAR='"+tfHotelconsyear.getText()+"', ROOM_CAPACITY='"+tfHotelCapacity.getText()+"', EMAIL_ADDRESS='"+tfHotelEmail.getText()+"',CONTACT_NUMBER='"+tfHotelContactNo.getText()+"',  ADDRESS='"+tfHotelAddress.getText()+"',  CITY ='"+tfHotelCity.getText()+"',  COUNTRY='"+ tfHotelCountry.getText()+"' where HOTEL_ID='"+ tfHotelId.getText()+"'");
+                
                 JOptionPane.showMessageDialog(null,"Updated Successfully!");
             }catch(Exception ex){
                 ex.printStackTrace();
