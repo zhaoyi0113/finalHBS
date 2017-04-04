@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,11 +69,10 @@ public class Hotel extends javax.swing.JFrame {
         this.jTableBooking.setModel(bookingTableModel);
         paymentTableModel = new PaymentTableModel();
         this.jTablePayment.setModel(paymentTableModel);
-        for(Iterator<Room> iterator = roomList.iterator(); iterator.hasNext();){
-            tfRoomHotelId.addItem(iterator.next().getRoomPK().getHotelId().intValue()+"");
+        for (Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext();) {
+            tfRoomHotelId.addItem(iterator.next().getHotelId().intValue() + "");
         }
     }
-
 
     /**
      * add action listeners on components
@@ -112,12 +112,12 @@ public class Hotel extends javax.swing.JFrame {
                 tfRoomId.setText(room.getRoomPK().getRoomNumber().intValue() + "");
                 tfRoomDesc.setText(room.getRoomDescription());
                 tfRoomPrice.setText(room.getRoomPrice() + "");
-                tfRoomCapacity.setSelectedItem(room.getRoomCapacity()+"");
-                tfRoomHotelId.setSelectedItem(room.getRoomPK().getHotelId()+"");
+                tfRoomCapacity.setSelectedItem(room.getGuestCapicity() + "");
+                tfRoomHotelId.setSelectedItem(room.getRoomPK().getHotelId() + "");
             }
         });
-        
-          this.jTableCustomer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        this.jTableCustomer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTableCustomer.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -141,16 +141,16 @@ public class Hotel extends javax.swing.JFrame {
                 tfCustomerCuntry.setText(customer.getCountry());
 
             }
-                    
+
         });
-        
+
         this.jTableGuest.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTableGuest.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int index = jTableGuest.getSelectedRow();
-                if (index < 0){
-                    return; 
+                if (index < 0) {
+                    return;
                 }
                 Guest guest = guestList.get(index);
                 tfGuestID.setText(guest.getGuestNumber().toString());
@@ -166,31 +166,31 @@ public class Hotel extends javax.swing.JFrame {
                 tfGuestCuntry.setText(guest.getCountry());
             }
         });
- 
+
         this.jTableMembership.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTableMembership.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int index = jTableMembership.getSelectedRow();
-                if (index < 0){
-                    return; 
+                if (index < 0) {
+                    return;
                 }
                 Membership membership = membershipList.get(index);
                 tfMembershipCredit.setText(membership.getTierCredit().toString());
                 tfMembershipDiscount.setText(membership.getDiscount());;
                 tfMembershipRewards.setText(membership.getReward());;
                 tfMembershipTier.setText(membership.getTierCredit().toString());;
-                
+
             }
         });
-        
+
         this.jTableBooking.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTableBooking.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int index = jTableBooking.getSelectedRow();
-                if (index < 0){
-                    return; 
+                if (index < 0) {
+                    return;
                 }
                 Booking booking = bookingList.get(index);
                 tfBookingCheckInDate.setText(booking.getCheckinDate());
@@ -204,17 +204,17 @@ public class Hotel extends javax.swing.JFrame {
                 tfBookingPaymentStatus.setSelectedItem(booking.getPaymentStatus());;
                 //tfBookingRoomNo.setText(booking.g);;
                 tfBookingTotalAmount.setText(booking.getTotalAmount().toString());;
-                
+
             }
         });
-        
+
         this.jTablePayment.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jTablePayment.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int index = jTablePayment.getSelectedRow();
-                if (index < 0){
-                    return; 
+                if (index < 0) {
+                    return;
                 }
                 Payment payment = paymentList.get(index);
                 tfPaymentAmount.setText(payment.getPaymentAmount().toString());
@@ -224,9 +224,13 @@ public class Hotel extends javax.swing.JFrame {
                 tfPaymentMethod.setSelectedItem(payment.getPaymentMethod());;
                 tfPaymentNo.setText(payment.getPaymentNumber().toString());;
                 tfPaymentRoomNo.setSelectedItem(payment.getRoomNumber());;
-                
+
             }
         });
+
+        for (Iterator<Facility> iterator = facilityList.iterator(); iterator.hasNext();) {
+            this.tfRoomFacilityCombo.addItem(iterator.next().getFacilityDescription());
+        }
     }
 
     /**
@@ -270,6 +274,10 @@ public class Hotel extends javax.swing.JFrame {
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
+        facilityQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT f FROM Facility f");
+        facilityList =  java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : facilityQuery.getResultList();;
+
+
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel24 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -2269,19 +2277,26 @@ public class Hotel extends javax.swing.JFrame {
         hotel_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : hotel_1Query.getResultList();
         tableModel.fireTableDataChanged();
     }
-    
-    private void updateRoomTable(){
-        /**************************************************************************************************************************************/
+
+    private void updateRoomTable() {
+        /**
+         * ***********************************************************************************************************************************
+         */
         /* this code not working
         roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
         roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
         roomTableModel.fireTableDataChanged();   
-        */
-        /**************************************************************************************************************************************/
+         */
+        /**
+         * ***********************************************************************************************************************************
+         */
+        roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
+        roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
+        roomTableModel.fireTableDataChanged();
     }
-    
+
     private void updateCustomerTable() {
-        
+
         tableModel.fireTableDataChanged();
     }
 
@@ -2322,68 +2337,100 @@ public class Hotel extends javax.swing.JFrame {
     private void jButtonInsertRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertRoomActionPerformed
         // TODO add your handling code here:
         if (this.jTableRoom.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(null, "No Room Selected!");
             return;
         }
-        
-        if (!tfRoomId.getText().trim().equals("") && tfRoomDesc.getText().trim().equals("") && tfRoomPrice.getText().trim().equals("")) {
 
+        if (!tfRoomId.getText().trim().equals("") && !tfRoomDesc.getText().trim().equals("") && !tfRoomPrice.getText().trim().equals("")) {
+            Room room = new Room();
+            room.setRoomPK(new RoomPK(new BigInteger(tfRoomId.getText()), new BigInteger(tfRoomHotelId.getSelectedItem().toString())));
+            room.setRoomType(jComboBox2.getSelectedItem().toString());
+            room.setRoomDescription(tfRoomDesc.getText());
+            room.setRoomPrice(tfRoomPrice.getText());
+            room.setGuestCapicity(new BigInteger(tfRoomCapacity.getSelectedItem().toString()));
             Statement stmt;
             try {
 
-                stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT INTO ROOM (ROOM_NUMBER, HOTEL_ID, ROOM_TYPE, ROOM_PRICE, GUEST_CAPICITY,ROOM_DESCRIPTION) "
-                        + "VALUES ("+ tfRoomId.getText()+", "+ tfRoomHotelId.getSelectedItem().toString()+", '"+ tfRoomDesc.getText()+"', '"+ tfRoomPrice.getText()+"','"+ tfRoomCapacity.getSelectedItem()+"', '"+ tfRoomDesc.getText()+"');");
-                Room room = this.roomList.get(this.jTableRoom.getSelectedRow());
-                /**************************************************************************************************************************************/
-                /*can you have a look here
-                RoomPK tempRoomPK = new RoomPK();
-                tempRoomPK.setRoomNumber(tfRoomId);
-                tempRoomPK.setHotelId(tfRoomHotelId);
-                room.setRoomPK(tempRoomPK); */
-                /**************************************************************************************************************************************/
-                this.entityManager.refresh(room);
-                updateHotelTable();
+                this.entityManager0.getTransaction().begin();
+                this.entityManager0.persist(room);
 
+                this.entityManager0.getTransaction().commit();
+                this.updateRoomTable();
                 JOptionPane.showMessageDialog(null, "Insert Successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Insert Failed!");
             }
 
         } else {
             RoomErrorMessage.setText("No fields can be empty");
         }
-        
+
     }//GEN-LAST:event_jButtonInsertRoomActionPerformed
 
     private void jButtonUpdateRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateRoomActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonUpdateRoomActionPerformed
+        if (this.jTableRoom.getSelectedRow() < 0) {
+            JOptionPane.showMessageDialog(null, "No Room Selected!");
+            return;
+        }
+        try {
 
+            this.entityManager0.getTransaction().begin();
+            Room room = this.roomList.get(this.jTableRoom.getSelectedRow());
+            room.setGuestCapicity(new BigInteger(tfRoomCapacity.getSelectedItem().toString()));
+            room.setRoomPrice(tfRoomPrice.getText());
+            room.setRoomDescription(tfRoomDesc.getText());
+            room.setRoomType(jComboBox2.getSelectedItem().toString());
+            this.entityManager0.getTransaction().commit();
+            this.updateRoomTable();
+            JOptionPane.showMessageDialog(null, "Insert Successfully!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Update Failed!");
+        }
+
+    }//GEN-LAST:event_jButtonUpdateRoomActionPerformed
 
 
     private void jButtonDeleteRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteRoomActionPerformed
         // TODO add your handling code here:
         int index = jTableRoom.getSelectedRow();
-        Statement stmt;
+        if (index < 0) {
+            return;
+        }
         try {
-
-            stmt = conn2.createStatement();
-            stmt.executeUpdate("delete from ROOM where ROOM_NUMBER=" + tfRoomId.getText());
+            this.entityManager0.getTransaction().begin();
+            RoomPK roomPk = this.roomList.get(index).getRoomPK();
+            Room room = this.entityManager0.find(Room.class, roomPk);
+            for (Iterator<Facility> iterator = this.facilityList.iterator(); iterator.hasNext();) {
+                Facility facility = iterator.next();
+                if (facility.getRoomCollection().contains(room)) {
+                    this.entityManager0.remove(facility);
+                }
+            }
+            this.entityManager0.remove(room);
+            this.entityManager0.getTransaction().commit();
             updateRoomTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
         } catch (Exception ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(Hotel.this, "Delete Room Failed.");
         }
 
     }//GEN-LAST:event_jButtonDeleteRoomActionPerformed
 
     private void jButtonSearchRoomByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchRoomByActionPerformed
-      
+        int index = this.tfRoomFacilityCombo.getSelectedIndex();
+        Facility facility = this.facilityList.get(index);
+        Collection<Room> rooms = facility.getRoomCollection();
+        this.roomList.clear();
+        this.roomList.addAll(rooms);
+        this.roomTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jButtonSearchRoomByActionPerformed
 
     private void tfRoomFacilityComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRoomFacilityComboActionPerformed
         // TODO add your handling code here:
-
     }//GEN-LAST:event_tfRoomFacilityComboActionPerformed
 
     private void jButtonSearchCutomerByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchCutomerByActionPerformed
@@ -2454,7 +2501,7 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonDeleteMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembershipActionPerformed
         // TODO add your handling code here:
-                int index = jTableMembership.getSelectedRow();
+        int index = jTableMembership.getSelectedRow();
         Statement stmt;
         try {
 
@@ -2507,7 +2554,7 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonDeleteMembership2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembership2ActionPerformed
         // TODO add your handling code here:
-                int index = jTablePayment.getSelectedRow();
+        int index = jTablePayment.getSelectedRow();
         Statement stmt;
         try {
 
@@ -2753,7 +2800,9 @@ public class Hotel extends javax.swing.JFrame {
     private java.util.List<finalhbs.Membership> membershipList;
     private javax.persistence.Query membershipQuery;
     private java.util.List<finalhbs.Payment> paymentList;
+    private java.util.List<finalhbs.Facility> facilityList;
     private javax.persistence.Query paymentQuery;
+    private javax.persistence.Query facilityQuery;
     private java.util.List<finalhbs.Room> roomList;
     private java.util.List<finalhbs.Room> roomList1;
     private java.util.List<finalhbs.Room> roomList2;
@@ -2834,6 +2883,7 @@ public class Hotel extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     class HotelTableModel extends AbstractTableModel {
+
         String columns[] = {"ID", "Name", "Tier", "Room Capacity", "Construction Year", "Address", "Country", "City", "Email", "Contact No."};
 
         @Override
@@ -2883,7 +2933,7 @@ public class Hotel extends javax.swing.JFrame {
 
     class RoomTableModel extends AbstractTableModel {
 
-        private String columns[] = {"Room ID", "Room Desc", "Room Price", "Room Capacity","Hotel ID","Room Type"};
+        private String columns[] = {"Room ID", "Room Desc", "Room Price", "Room Capacity", "Hotel ID", "Room Type"};
 
         @Override
         public int getRowCount() {
@@ -2911,7 +2961,7 @@ public class Hotel extends javax.swing.JFrame {
                 case 2:
                     return room.getRoomPrice();
                 case 3:
-                    return room.getRoomCapacity();
+                    return room.getGuestCapicity();
                 case 4:
                     return room.getRoomPK().getHotelId();
                 case 5:
@@ -2920,11 +2970,11 @@ public class Hotel extends javax.swing.JFrame {
             return null;
         }
     }
-    
+
     class CustomerTableModel extends AbstractTableModel {
-            
-        private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME","PHONE_NUMBER", "DOB","EMAIL_ADDRESS","MEMBERSHIP_CREDIT",
-            "MEMBERSHIP_TIER","POSTAL_CODE","STREET","CITY", "COUNTRY" };
+
+        private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS", "MEMBERSHIP_CREDIT",
+            "MEMBERSHIP_TIER", "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
 
         @Override
         public int getRowCount() {
@@ -2962,9 +3012,9 @@ public class Hotel extends javax.swing.JFrame {
                 case 7:
                     return customer.getMembershipCredit();
                 case 8:
-                    return customer.getMembershipTier();    
+                    return customer.getMembershipTier();
                 case 9:
-                    return customer.getPostalCode();    
+                    return customer.getPostalCode();
                 case 10:
                     return customer.getStreet();
                 case 11:
@@ -2974,13 +3024,13 @@ public class Hotel extends javax.swing.JFrame {
             }
             return null;
         }
-        
+
     }
 
     class GuestTableModel extends AbstractTableModel {
-            
-        private String columns[] = {"GUEST_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME","PHONE_NUMBER", "DOB","EMAIL_ADDRESS",
-            "POSTAL_CODE","STREET","CITY", "COUNTRY" };
+
+        private String columns[] = {"GUEST_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS",
+            "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
 
         @Override
         public int getRowCount() {
@@ -3026,12 +3076,12 @@ public class Hotel extends javax.swing.JFrame {
             }
             return null;
         }
-        
+
     }
 
     class MembershipTableModel extends AbstractTableModel {
-            
-        private String columns[] = {"MEMBERSHIP_TIER", "TIER_CREDIT", "DISCOUNT", "REWARD" };
+
+        private String columns[] = {"MEMBERSHIP_TIER", "TIER_CREDIT", "DISCOUNT", "REWARD"};
 
         @Override
         public int getRowCount() {
@@ -3064,12 +3114,12 @@ public class Hotel extends javax.swing.JFrame {
             }
             return null;
         }
-        
+
     }
 
     class BookingTableModel extends AbstractTableModel {
-            
-        private String columns[] = {"CUSTOMER_NUMBER", "CHECKIN_DATE", "CHECKOUT_DATE", "CONTACT_PERSON", "CONTACT_EMAIL","TOTAL_AMOUNT", "DISCOUNT_AMOUNT","PAYMENT_STATUS" };
+
+        private String columns[] = {"CUSTOMER_NUMBER", "CHECKIN_DATE", "CHECKOUT_DATE", "CONTACT_PERSON", "CONTACT_EMAIL", "TOTAL_AMOUNT", "DISCOUNT_AMOUNT", "PAYMENT_STATUS"};
 
         @Override
         public int getRowCount() {
@@ -3106,16 +3156,16 @@ public class Hotel extends javax.swing.JFrame {
                     return booking.getDiscountAmount();
                 case 7:
                     return booking.getPaymentStatus();
-                    
+
             }
             return null;
         }
-        
+
     }
-    
-        class PaymentTableModel extends AbstractTableModel {
-            
-        private String columns[] = {"PAYMENT_NUMBER", "BOOKING_NUMBER", "HOTEL_ID", "ROOM_NUMBER", "PAYMENT_DATE","PAYMENT_METHOD", "PAYMENT_AMOUNT"};
+
+    class PaymentTableModel extends AbstractTableModel {
+
+        private String columns[] = {"PAYMENT_NUMBER", "BOOKING_NUMBER", "HOTEL_ID", "ROOM_NUMBER", "PAYMENT_DATE", "PAYMENT_METHOD", "PAYMENT_AMOUNT"};
 
         @Override
         public int getRowCount() {
@@ -3149,11 +3199,11 @@ public class Hotel extends javax.swing.JFrame {
                 case 5:
                     return payment.getPaymentMethod();
                 case 6:
-                    return payment.getPaymentAmount();                    
+                    return payment.getPaymentAmount();
             }
             return null;
         }
-        
+
     }
 
 }

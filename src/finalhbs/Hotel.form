@@ -1979,7 +1979,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel14" min="-2" pref="510" max="-2" attributes="0"/>
+                      <Component id="jPanel14" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jPanel15" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -2013,7 +2013,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="jLabel49" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="32767" attributes="0"/>
+                                          <EmptySpace pref="33" max="32767" attributes="0"/>
                                           <Component id="tfMembershipTier" min="-2" pref="355" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
@@ -2788,7 +2788,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel22" min="-2" pref="510" max="-2" attributes="0"/>
+                      <Component id="jPanel22" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jPanel23" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -2852,7 +2852,7 @@
                                   <Component id="jButtonDeleteMembership2" min="-2" pref="99" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jLabel70" max="32767" attributes="0"/>
+                                  <Component id="jLabel70" pref="141" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                                   <Component id="tfPaymentMethod" min="-2" pref="355" max="-2" attributes="0"/>
                               </Group>

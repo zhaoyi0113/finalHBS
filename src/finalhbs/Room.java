@@ -9,14 +9,19 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,9 +35,19 @@ import javax.persistence.Transient;
     , @NamedQuery(name = "Room.findByHotelId", query = "SELECT r FROM Room r WHERE r.roomPK.hotelId = :hotelId")
     , @NamedQuery(name = "Room.findByRoomType", query = "SELECT r FROM Room r WHERE r.roomType = :roomType")
     , @NamedQuery(name = "Room.findByRoomPrice", query = "SELECT r FROM Room r WHERE r.roomPrice = :roomPrice")
-    , @NamedQuery(name = "Room.findByRoomCapacity", query = "SELECT r FROM Room r WHERE r.roomCapacity = :roomCapacity")
+    , @NamedQuery(name = "Room.findByGuestCapacity", query = "SELECT r FROM Room r WHERE r.guestCapicity = :guestCapicity")
     , @NamedQuery(name = "Room.findByRoomDescription", query = "SELECT r FROM Room r WHERE r.roomDescription = :roomDescription")})
 public class Room implements Serializable {
+
+    @Basic(optional = false)
+    @Column(name = "GUEST_CAPICITY")
+    private BigInteger guestCapicity;
+    @JoinTable(name = "ROOM_FACILITY", joinColumns = {
+        @JoinColumn(name = "ROOM_NUMBER", referencedColumnName = "ROOM_NUMBER")
+        , @JoinColumn(name = "HOTEL_ID", referencedColumnName = "HOTEL_ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "FACILITY_NUMBER", referencedColumnName = "FACILITY_NUMBER")})
+    @ManyToMany
+    private Collection<Facility> facilityCollection;
 
     @Transient
     private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -48,8 +63,6 @@ public class Room implements Serializable {
     private String roomPrice;
     @Column(name = "ROOM_DESCRIPTION")
     private String roomDescription;
-    @Column(name = "GUEST_CAPICITY")
-    private int roomCapacity;
 
     public Room() {
     }
@@ -86,13 +99,6 @@ public class Room implements Serializable {
         changeSupport.firePropertyChange("roomType", oldRoomType, roomType);
     }
 
-    public int getRoomCapacity() {
-        return roomCapacity;
-    }
-
-    public void setRoomCapacity(int roomCapacity) {
-        this.roomCapacity = roomCapacity;
-    }
 
     public String getRoomPrice() {
         return roomPrice;
@@ -146,6 +152,23 @@ public class Room implements Serializable {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(listener);
+    }
+
+    public BigInteger getGuestCapicity() {
+        return guestCapicity;
+    }
+
+    public void setGuestCapicity(BigInteger guestCapicity) {
+        this.guestCapicity = guestCapicity;
+    }
+
+    @XmlTransient
+    public Collection<Facility> getFacilityCollection() {
+        return facilityCollection;
+    }
+
+    public void setFacilityCollection(Collection<Facility> facilityCollection) {
+        this.facilityCollection = facilityCollection;
     }
     
 }

@@ -18,6 +18,7 @@
     <class>finalhbs.Membership</class>
     <class>finalhbs.Booking</class>
     <class>finalhbs.Payment</class>
+    <class>finalhbs.Facility</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@hippo.its.monash.edu:1521:FIT5148B"/>
       <property name="javax.persistence.jdbc.user" value="S27143392"/>
