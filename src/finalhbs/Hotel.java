@@ -160,7 +160,6 @@ public class Hotel extends javax.swing.JFrame {
                 tfCustomerStreet.setText(customer.getStreet());
                 tfCustomerCity.setText(customer.getCity());
                 tfCustomerCuntry.setText(customer.getCountry());
-
             }
 
         });
@@ -301,7 +300,7 @@ public class Hotel extends javax.swing.JFrame {
         membershipList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : membershipQuery.getResultList();
         bookingQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT b FROM Booking b");
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
-        paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
+        paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p where p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
         facilityQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT f FROM Facility f");
         facilityList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : facilityQuery.getResultList();
@@ -1093,7 +1092,7 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel28.setText("Contcat no:");
 
-        comboCustomerMemberTier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Platinum", "Gold", "Bronze"}));
+        comboCustomerMemberTier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"platinum", "gold", "bronze"}));
         comboCustomerMemberTier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboCustomerMemberTierActionPerformed(evt);
