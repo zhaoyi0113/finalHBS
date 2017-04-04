@@ -2478,6 +2478,9 @@
                               <StringArray count="0"/>
                             </Property>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfBookingHotelIDActionPerformed"/>
+                          </Events>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                           </AuxValues>
@@ -2552,7 +2555,11 @@
                         <Component class="javax.swing.JComboBox" name="tfBookingPaymentStatus">
                           <Properties>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                              <StringArray count="0"/>
+                              <StringArray count="3">
+                                <StringItem index="0" value="PAID"/>
+                                <StringItem index="1" value="UNPAID"/>
+                                <StringItem index="2" value="CANCELED"/>
+                              </StringArray>
                             </Property>
                           </Properties>
                           <AuxValues>
@@ -2613,10 +2620,7 @@
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="jLabel77" min="-2" pref="125" max="-2" attributes="0"/>
-                                                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                                              </Group>
+                                              <Component id="jLabel77" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
                                               <Component id="jLabel76" alignment="1" min="-2" pref="125" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
