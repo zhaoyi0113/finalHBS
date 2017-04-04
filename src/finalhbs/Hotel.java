@@ -2279,17 +2279,6 @@ public class Hotel extends javax.swing.JFrame {
     }
 
     private void updateRoomTable() {
-        /**
-         * ***********************************************************************************************************************************
-         */
-        /* this code not working
-        roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
-        roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
-        roomTableModel.fireTableDataChanged();   
-         */
-        /**
-         * ***********************************************************************************************************************************
-         */
         roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
         roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
         roomTableModel.fireTableDataChanged();
