@@ -302,6 +302,9 @@ public class Hotel extends javax.swing.JFrame {
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
+        facilityQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT f FROM Facility f");
+        facilityList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : facilityQuery.getResultList();
+        ;
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel24 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -2347,6 +2350,14 @@ public class Hotel extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "There are rooms available under this hotel, not allow to delete!");
                 return;
             }
+            
+            stmt1 = this.conn2.createStatement();
+            set = stmt1.executeQuery("select * from booking where hotel_id="+tfHotelId.getText());
+            if(set.next()){
+                JOptionPane.showMessageDialog(null, "There are bookings available under this hotel, not allow to delete!");
+                return;
+            }
+            
             stmt = conn.createStatement();
 
             stmt.executeUpdate("delete from HOTEL where HOTEL_ID='" + tfHotelId.getText() + "'");
@@ -2444,9 +2455,16 @@ public class Hotel extends javax.swing.JFrame {
             return;
         }
         try {
-            this.entityManager0.getTransaction().begin();
             RoomPK roomPk = this.roomList.get(index).getRoomPK();
             Room room = this.entityManager0.find(Room.class, roomPk);
+            Statement stmt1 = this.conn2.createStatement();
+            ResultSet set = stmt1.executeQuery("select * from booking where room_number=" + roomPk.getRoomNumber());
+            if(set.next()){
+                JOptionPane.showMessageDialog(null, "There are booking available under this room, not allow to delete!");
+                return;
+            }
+            
+            this.entityManager0.getTransaction().begin();
             for (Iterator<Facility> iterator = this.facilityList.iterator(); iterator.hasNext(); ) {
                 Facility facility = iterator.next();
                 if (facility.getRoomCollection().contains(room)) {
@@ -2484,12 +2502,22 @@ public class Hotel extends javax.swing.JFrame {
     private void jButtonDeleteCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteCutomerActionPerformed
         // TODO add your handling code here:
         int index = jTableCustomer.getSelectedRow();
-        Statement stmt;
+        if(index<0){
+            return;
+        }
         try {
-
-            stmt = conn2.createStatement();
-            stmt.executeUpdate("delete from CUSTOMER where CUSTOMER_NUMBER=" + tfCustomerID.getText());
-            updateRoomTable();
+            Customer customer = this.customerList.get(index);
+            ResultSet set = this.conn2.createStatement().executeQuery("select * from booking where booking_number = "+customer.getCustomerNumber());
+            if(set.next()){
+                JOptionPane.showMessageDialog(null, "There are booking related to this customer, not allow to delete.");
+                return;
+            }
+            this.entityManager0.getTransaction().begin();
+            
+            
+            
+            this.entityManager0.getTransaction().commit();
+            
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2564,7 +2592,7 @@ public class Hotel extends javax.swing.JFrame {
         String credit = membershipSearchField.getText();
         Query query = this.entityManager0.createQuery("select m from Membership m where m.tierCredit <= "+credit);
         this.membershipList = query.getResultList();
-        this.updateMembershipTable();
+        membershipTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jButtonSearchMembershipByActionPerformed
 
     private void jButtonInsertMembership1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembership1ActionPerformed
