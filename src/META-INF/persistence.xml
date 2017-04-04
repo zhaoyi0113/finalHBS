@@ -14,6 +14,10 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>finalhbs.Room</class>
     <class>finalhbs.Customer</class>
+    <class>finalhbs.Guest</class>
+    <class>finalhbs.Membership</class>
+    <class>finalhbs.Booking</class>
+    <class>finalhbs.Payment</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@hippo.its.monash.edu:1521:FIT5148B"/>
       <property name="javax.persistence.jdbc.user" value="S27143392"/>
