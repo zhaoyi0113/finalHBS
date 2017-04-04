@@ -204,7 +204,7 @@ public class Hotel extends javax.swing.JFrame {
                 tfBookingContactPerson.setText(booking.getContactPerson());
                 tfBookingCustNo.setSelectedItem(booking.getContactPerson());
                 tfBookingDiscount.setText(booking.getDiscountAmount().toString());
-                tfBookingHotelID.setSelectedItem(booking.getCustomerNumber());
+                tfBookingHotelID.setSelectedItem(booking.getBookingPK().getHotelId() + "");
                 tfBookingNumber.setText(booking.getBookingPK().getBookingNumber().toString());
                 tfBookingPaymentStatus.setSelectedItem(booking.getPaymentStatus());
                 tfBookingTotalAmount.setText(booking.getTotalAmount().toString());
