@@ -2804,10 +2804,10 @@ public class Hotel extends javax.swing.JFrame {
                     String sql = "INSERT INTO BOOKING (BOOKING_NUMBER, CUSTOMER_NUMBER,  HOTEL_ID, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, CONTACT_PERSON, "
                             + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES ("
                             + tfBookingNumber.getText() + ", "
-                            + tfBookingCustNo.getSelectedItem().toString() 
+                            + tfBookingCustNo.getSelectedItem().toString()
                             + ", '" + tfBookingHotelID.getSelectedItem().toString() + "', "
-                            + tfBookingRoomNo.getSelectedItem().toString() + ", '" 
-                            + tfBookingCheckInDate.getText() + "', '" 
+                            + tfBookingRoomNo.getSelectedItem().toString() + ", '"
+                            + tfBookingCheckInDate.getText() + "', '"
                             + tfBookingCheckOutDate.getText() + "', '"
                             + tfBookingContactPerson.getText() + "', '" + tfBookingContactEmail.getText() + "', " + tfBookingTotalAmount.getText() + ","
                             + tfBookingDiscount.getText() + ", '" + tfBookingPaymentStatus.getSelectedItem().toString() + "')";
@@ -2856,7 +2856,7 @@ public class Hotel extends javax.swing.JFrame {
     private void updatePaymentTable() {
         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
-        for(Iterator<Payment> iterator = paymentList.iterator(); iterator.hasNext();){
+        for (Iterator<Payment> iterator = paymentList.iterator(); iterator.hasNext();) {
             entityManager0.refresh(iterator.next());
         }
         paymentTableModel.fireTableDataChanged();
@@ -3148,12 +3148,17 @@ public class Hotel extends javax.swing.JFrame {
         // TODO add your handling code here:
         Statement stmt;
         try {
-            stmt = conn2.createStatement();
-            stmt.executeUpdate("select distinct CUSTOMER.*  from MEMBERSHIP ,CUSTOMER  where MEMBERSHIP.TIER_CREDIT <= CUSTOMER.MEMBERSHIP_CREDIT ");
-            //this.updateElegibiliyTable();
-            stmt.close();
+//            stmt = conn2.createStatement();
+//            stmt.executeUpdate("select distinct CUSTOMER.*  from MEMBERSHIP ,CUSTOMER  where MEMBERSHIP.TIER_CREDIT <= CUSTOMER.MEMBERSHIP_CREDIT ");
+//            this.updateElegibiliyTable();
+            customerQuery2 = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c, Membership m where m.tierCredit <= c.membershipCredit");
+            customerList2 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery2.getResultList();
+            eligibilityTableModel.fireTableDataChanged();
+//            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+            
         }
     }//GEN-LAST:event_jButtonSearchMembershipByActionPerformed
 
