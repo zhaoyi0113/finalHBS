@@ -74,7 +74,7 @@ public class Hotel extends javax.swing.JFrame {
         this.jTablePayment.setModel(paymentTableModel);
         eligibilityTableModel = new EligibilityTableModel();
         this.JTableEligibility.setModel(eligibilityTableModel);
-        for (Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext();) {
             Hotel_1 hotel = iterator.next();
             tfRoomHotelId.addItem(hotel.getHotelId().intValue() + "");
             tfBookingHotelID.addItem(hotel.getHotelId().intValue() + "");
@@ -83,28 +83,28 @@ public class Hotel extends javax.swing.JFrame {
         this.availableRoomModel = new RoomTableModel(availableRoomList);
         this.jTableShowAvailableroom.setModel(this.availableRoomModel);
 
-        for (Iterator<Room> iterator = roomList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Room> iterator = roomList.iterator(); iterator.hasNext();) {
             String hotelId = tfBookingHotelID.getSelectedItem().toString();
             Room room = iterator.next();
             if (room.getRoomPK().getHotelId().toString().equals(hotelId)) {
                 tfBookingRoomNo.addItem(room.getRoomPK().getRoomNumber().toString());
             }
         }
-        for (Iterator<Customer> iterator = this.customerList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Customer> iterator = this.customerList.iterator(); iterator.hasNext();) {
             Customer cu = iterator.next();
             tfBookingCustNo.addItem(cu.getCustomerNumber().toString());
         }
-        
-        for (Iterator<Membership> iterator = this.membershipList.iterator(); iterator.hasNext(); ) {
+
+        for (Iterator<Membership> iterator = this.membershipList.iterator(); iterator.hasNext();) {
             Membership m = iterator.next();
             comboCustomerMemberTier.addItem(m.getMembershipTier().toString());
         }
-        
-        for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext(); ) {
+
+        for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext();) {
             Booking b = iterator.next();
             comboPaymentBookingNo.addItem(b.getBookingPK().getBookingNumber().toString());
         }
-  
+
     }
 
     /**
@@ -268,11 +268,11 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
-        for (Iterator<Facility> iterator = facilityList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Facility> iterator = facilityList.iterator(); iterator.hasNext();) {
             this.tfRoomFacilityCombo.addItem(iterator.next().getFacilityDescription());
         }
-        
-        for (Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext(); ) {
+
+        for (Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext();) {
             this.JComboCustomerByMembership.addItem(iterator.next().getMembershipTier());
         }
     }
@@ -2304,74 +2304,74 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonInsertHotelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertHotelActionPerformed
         // TODO add your handling code here:
-        try{
-            
+        try {
+
             if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
-                && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
-                && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
-                && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
-                
+                    && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
+                    && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
+                    && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
+
                 Integer.parseInt(tfHotelId.getText().toString());
                 Integer.parseInt(tfHotelCapacity.getText().toString());
                 Integer.parseInt(tfHotelContactNo.getText().toString());
 
-            Statement stmt;
-            try {
-                
-                stmt = conn.createStatement();
-                stmt.executeUpdate("insert into hotel (HOTEL_ID, HOTEL_NAME, ROOM_CAPACITY,HOTEL_TIER, CONSTRUCTION_YEAR,EMAIL_ADDRESS, CONTACT_NUMBER, ADDRESS,CITY,COUNTRY ) VALUES ('" + tfHotelId.getText() + "','" + tfHotelNAme.getText() + "','" + tfHotelCapacity.getText() + "','" + tfHotelTier.getSelectedItem() + "','" + tfHotelconsyear.getText() + "','" + tfHotelEmail.getText() + "','" + tfHotelContactNo.getText() + "','" + tfHotelAddress.getText() + "','" + tfHotelCity.getText() + "','" + tfHotelCountry.getText() + "')");
-                this.updateHotelTable();
-                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            hotelFieldsErrorMessage.setText("No fields can be empty");
-        }
+                Statement stmt;
+                try {
 
-        }catch(Exception e){
+                    stmt = conn.createStatement();
+                    stmt.executeUpdate("insert into hotel (HOTEL_ID, HOTEL_NAME, ROOM_CAPACITY,HOTEL_TIER, CONSTRUCTION_YEAR,EMAIL_ADDRESS, CONTACT_NUMBER, ADDRESS,CITY,COUNTRY ) VALUES ('" + tfHotelId.getText() + "','" + tfHotelNAme.getText() + "','" + tfHotelCapacity.getText() + "','" + tfHotelTier.getSelectedItem() + "','" + tfHotelconsyear.getText() + "','" + tfHotelEmail.getText() + "','" + tfHotelContactNo.getText() + "','" + tfHotelAddress.getText() + "','" + tfHotelCity.getText() + "','" + tfHotelCountry.getText() + "')");
+                    this.updateHotelTable();
+                    JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                hotelFieldsErrorMessage.setText("No fields can be empty");
+            }
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Hotel ID, hotel capacity and contact number have to contain in numbers only");
         }
-        
+
     }//GEN-LAST:event_jButtonInsertHotelActionPerformed
 
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
-        try{
+        try {
             Integer.parseInt(tfHotelId.getText().toString());
             Integer.parseInt(tfHotelCapacity.getText().toString());
             Integer.parseInt(tfHotelContactNo.getText().toString());
             if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
-                && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
-                && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
-                && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
-            Statement stmt;
-            try {
-                stmt = conn.createStatement();
-                stmt.executeUpdate("update HOTEL set  HOTEL_NAME='" + tfHotelNAme.getText() + "', HOTEL_TIER='" + tfHotelTier.getSelectedItem().toString() + "', CONSTRUCTION_YEAR='" + tfHotelconsyear.getText() + "', ROOM_CAPACITY='" + tfHotelCapacity.getText() + "', EMAIL_ADDRESS='" + tfHotelEmail.getText() + "',CONTACT_NUMBER='" + tfHotelContactNo.getText() + "',  ADDRESS='" + tfHotelAddress.getText() + "',  CITY ='" + tfHotelCity.getText() + "',  COUNTRY='" + tfHotelCountry.getText() + "' where HOTEL_ID='" + tfHotelId.getText() + "'");
-                
-                stmt.close();
-                this.updateHotelTable();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                    && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
+                    && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
+                    && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
+                Statement stmt;
+                try {
+                    stmt = conn.createStatement();
+                    stmt.executeUpdate("update HOTEL set  HOTEL_NAME='" + tfHotelNAme.getText() + "', HOTEL_TIER='" + tfHotelTier.getSelectedItem().toString() + "', CONSTRUCTION_YEAR='" + tfHotelconsyear.getText() + "', ROOM_CAPACITY='" + tfHotelCapacity.getText() + "', EMAIL_ADDRESS='" + tfHotelEmail.getText() + "',CONTACT_NUMBER='" + tfHotelContactNo.getText() + "',  ADDRESS='" + tfHotelAddress.getText() + "',  CITY ='" + tfHotelCity.getText() + "',  COUNTRY='" + tfHotelCountry.getText() + "' where HOTEL_ID='" + tfHotelId.getText() + "'");
+
+                    stmt.close();
+                    this.updateHotelTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                hotelFieldsErrorMessage.setText("No fields can be empty");
             }
-        } else {
-            hotelFieldsErrorMessage.setText("No fields can be empty");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Hotel ID, hotel capacity and contact number have to contain in numbers only");
         }
 
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Hotel ID, hotel capacity and contact number have to contain in numbers only");
-        }
-          
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 
     private void updateHotelTable() {
-        
+
         hotel_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT h FROM Hotel_1 h");
         hotel_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : hotel_1Query.getResultList();
-        
-        for(Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext();){
+
+        for (Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext();) {
             entityManager.refresh(iterator.next());
         }
         tableModel.fireTableDataChanged();
@@ -2380,50 +2380,56 @@ public class Hotel extends javax.swing.JFrame {
     private void updateRoomTable() {
         roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
         roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
-        for(Iterator<Room> iterator = roomList.iterator(); iterator.hasNext();){
+        for (Iterator<Room> iterator = roomList.iterator(); iterator.hasNext();) {
             entityManager0.refresh(iterator.next());
         }
         roomTableModel.fireTableDataChanged();
     }
-    
-        private void updateAvailableRoom() {
+
+    private void updateAvailableRoom() {
         availableRoomModel.fireTableDataChanged();
     }
 
     private void updateCustomerTable() {
         customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
         customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
+        for(Iterator<Customer> iterator = customerList.iterator(); iterator.hasNext();){
+            entityManager0.refresh(iterator.next());
+        }
         customerTableModel.fireTableDataChanged();
     }
-    
-    private void updateGuestTable(){
+
+    private void updateGuestTable() {
         guestQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT g FROM Guest g");
         guestList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : guestQuery.getResultList();
+        for(Iterator<Guest> iterator = guestList.iterator(); iterator.hasNext();){
+            entityManager0.refresh(iterator.next());
+        }
         guestTableModel.fireTableDataChanged();
-    } 
+    }
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
-                int index = jTableHotel.getSelectedRow();
-        if(index<0){
+        int index = jTableHotel.getSelectedRow();
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
         }
         Statement stmt;
         try {
             Statement stmt1 = this.conn2.createStatement();
-            ResultSet set = stmt1.executeQuery("select * from room where hotel_id="+tfHotelId.getText());
-            if(set.next()){
+            ResultSet set = stmt1.executeQuery("select * from room where hotel_id=" + tfHotelId.getText());
+            if (set.next()) {
                 JOptionPane.showMessageDialog(null, "There are rooms available under this hotel, not allow to delete!");
                 return;
             }
-            
+
             stmt1 = this.conn2.createStatement();
-            set = stmt1.executeQuery("select * from booking where hotel_id="+tfHotelId.getText());
-            if(set.next()){
+            set = stmt1.executeQuery("select * from booking where hotel_id=" + tfHotelId.getText());
+            if (set.next()) {
                 JOptionPane.showMessageDialog(null, "There are bookings available under this hotel, not allow to delete!");
                 return;
             }
-            
+
             stmt = conn.createStatement();
 
             stmt.executeUpdate("delete from HOTEL where HOTEL_ID='" + tfHotelId.getText() + "'");
@@ -2458,34 +2464,34 @@ public class Hotel extends javax.swing.JFrame {
     }//GEN-LAST:event_tfHotelTierActionPerformed
 
     private void jButtonInsertRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertRoomActionPerformed
-        try{
+        try {
             Integer.parseInt(tfRoomId.getText().toString());
 
             if (!tfRoomId.getText().trim().equals("") && !tfRoomDesc.getText().trim().equals("") && !tfRoomPrice.getText().trim().equals("")) {
-            Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("INSERT INTO ROOM (ROOM_NUMBER, HOTEL_ID, ROOM_TYPE, ROOM_PRICE, GUEST_CAPICITY,ROOM_DESCRIPTION) VALUES ("+tfRoomId.getText()+", '"+ tfRoomHotelId.getSelectedItem().toString()+"', '"+jComboRoomType.getSelectedItem().toString()+"', '"+ tfRoomPrice.getText()+"','"+tfRoomCapacity.getSelectedItem().toString()+"', '"+ tfRoomDesc.getText()+"')");
-                paymentTableModel.fireTableDataChanged();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Insert Failed!");
-            }
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("INSERT INTO ROOM (ROOM_NUMBER, HOTEL_ID, ROOM_TYPE, ROOM_PRICE, GUEST_CAPICITY,ROOM_DESCRIPTION) VALUES (" + tfRoomId.getText() + ", '" + tfRoomHotelId.getSelectedItem().toString() + "', '" + jComboRoomType.getSelectedItem().toString() + "', '" + tfRoomPrice.getText() + "','" + tfRoomCapacity.getSelectedItem().toString() + "', '" + tfRoomDesc.getText() + "')");
+                    paymentTableModel.fireTableDataChanged();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Insert Failed!");
+                }
 
             } else {
                 RoomErrorMessage.setText("No fields can be empty");
             }
 
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null,"  Room ID has  to contain in numbers only");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "  Room ID has  to contain in numbers only");
         }
-            
+
     }//GEN-LAST:event_jButtonInsertRoomActionPerformed
 
     private void jButtonUpdateRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateRoomActionPerformed
-        try{
+        try {
             Integer.parseInt(tfRoomId.getText());
             Integer.parseInt(tfRoomCapacity.getSelectedItem().toString());
 
@@ -2494,10 +2500,10 @@ public class Hotel extends javax.swing.JFrame {
                 try {
 
                     stmt = conn2.createStatement();
-                    String sql = "UPDATE ROOM SET ROOM_TYPE='"+this.jComboRoomType.getSelectedItem().toString()+"',ROOM_PRICE='"+ tfRoomPrice.getText()+"',GUEST_CAPICITY="+ tfRoomCapacity.getSelectedItem().toString()+",ROOM_DESCRIPTION='"+ tfRoomDesc.getText()+"' WHERE ROOM_NUMBER = "+ tfRoomId.getText() ;
-                    System.out.println("sql="+sql);
+                    String sql = "UPDATE ROOM SET ROOM_TYPE='" + this.jComboRoomType.getSelectedItem().toString() + "',ROOM_PRICE='" + tfRoomPrice.getText() + "',GUEST_CAPICITY=" + tfRoomCapacity.getSelectedItem().toString() + ",ROOM_DESCRIPTION='" + tfRoomDesc.getText() + "' WHERE ROOM_NUMBER = " + tfRoomId.getText();
+                    System.out.println("sql=" + sql);
                     stmt.executeUpdate(sql);
-                    
+
                     this.updateRoomTable();
                     JOptionPane.showMessageDialog(null, "Updated Successfully!");
                     stmt.close();
@@ -2508,9 +2514,9 @@ public class Hotel extends javax.swing.JFrame {
                 hotelFieldsErrorMessage.setText("No fields can be empty");
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"  Room ID, room capacity have to contain in numbers only");
+            JOptionPane.showMessageDialog(null, "  Room ID, room capacity have to contain in numbers only");
         }
 
     }//GEN-LAST:event_jButtonUpdateRoomActionPerformed
@@ -2527,13 +2533,13 @@ public class Hotel extends javax.swing.JFrame {
             Room room = this.entityManager0.find(Room.class, roomPk);
             Statement stmt1 = this.conn2.createStatement();
             ResultSet set = stmt1.executeQuery("select * from booking where room_number=" + roomPk.getRoomNumber());
-            if(set.next()){
+            if (set.next()) {
                 JOptionPane.showMessageDialog(null, "There are booking available under this room, not allow to delete!");
                 return;
             }
-            
+
             this.entityManager0.getTransaction().begin();
-            for (Iterator<Facility> iterator = this.facilityList.iterator(); iterator.hasNext(); ) {
+            for (Iterator<Facility> iterator = this.facilityList.iterator(); iterator.hasNext();) {
                 Facility facility = iterator.next();
                 if (facility.getRoomCollection().contains(room)) {
                     this.entityManager0.remove(facility);
@@ -2567,34 +2573,34 @@ public class Hotel extends javax.swing.JFrame {
     private void jButtonSearchCutomerByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchCutomerByActionPerformed
         // TODO add your handling code here:
         Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("SELECT * FROM CUSTOMER WHERE MEMBERSHIP_TIER = '"+ JComboCustomerByMembership.getSelectedItem().toString()+"'");
-                this.updateCustomerTable();
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            stmt = conn2.createStatement();
+            stmt.executeUpdate("SELECT * FROM CUSTOMER WHERE MEMBERSHIP_TIER = '" + JComboCustomerByMembership.getSelectedItem().toString() + "'");
+            this.updateCustomerTable();
+            stmt.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonSearchCutomerByActionPerformed
 
     private void jButtonDeleteCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteCutomerActionPerformed
         // TODO add your handling code here:
         int index = jTableCustomer.getSelectedRow();
-        if(index<0){
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
         }
         try {
             Customer customer = this.customerList.get(index);
-            ResultSet set = this.conn2.createStatement().executeQuery("select * from booking where booking_number = "+customer.getCustomerNumber());
-            if(set.next()){
+            ResultSet set = this.conn2.createStatement().executeQuery("select * from booking where booking_number = " + customer.getCustomerNumber());
+            if (set.next()) {
                 JOptionPane.showMessageDialog(null, "There are booking related to this customer, not allow to delete. ");
                 return;
             }
             Statement stmt = conn2.createStatement();
             stmt.executeUpdate("delete from CUSTOMER where CUSTOMER_NUMBER='" + tfCustomerID.getText() + "'");
-            this.updateCustomerTable();        
-            JOptionPane.showMessageDialog(null, "Deleted Successfully!");                
+            this.updateCustomerTable();
+            JOptionPane.showMessageDialog(null, "Deleted Successfully!");
             stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2603,74 +2609,72 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonUpdateCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateCutomerActionPerformed
         // TODO add your handling code here:
-        
-try{
+
+        try {
             Integer.parseInt(tfCustomerID.getText().toString());
-            Integer.parseInt(tfCustomerContactNo.getText().toString());
-            Integer.parseInt(tfCustomerCredit.getText().toString());
 
-if (this.jTableCustomer.getSelectedRow() < 0) {
-            return;
-        }
-         if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
-                && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
-                && !tfCustomerTitle.getText().trim().equals("")&& !tfCustomerContactNo.getText().trim().equals("")
-                && !tfCustomerEmail.getText().trim().equals("")) {
-            try {
+            if (this.jTableCustomer.getSelectedRow() < 0) {
+                return;
+            }
+            if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
+                    && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
+                    && !tfCustomerTitle.getText().trim().equals("") && !tfCustomerContactNo.getText().trim().equals("")
+                    && !tfCustomerEmail.getText().trim().equals("")) {
+                try {
 
-                Statement stmt = conn2.createStatement();
-                stmt.executeUpdate("UPDATE CUSTOMER SET TITLE= '"+ tfCustomerTitle.getText()+"',FIRST_NAME= '"+ tfCustomerFName.getText()+"',LAST_NAME= '"+ tfCustomerLName.getText()+"',PHONE_NUMBER= '"+ tfCustomerContactNo.getText()+"', DOB=  '"+ tfCustomerDOB.getText()+"', EMAIL_ADDRESS = '"+ tfCustomerEmail.getText()+"',MEMBERSHIP_TIER= '"+ comboCustomerMemberTier.getSelectedItem().toString()+"' , MEMBERSHIP_CREDIT= '"+ tfCustomerCredit.getText()+"',  POSTAL_CODE= '"+ tfCustomerPostCode.getText()+"',STREET=  '"+ tfCustomerStreet.getText()+"', CITY= '"+ tfCustomerCity.getText()+"', COUNTRY=  '"+ tfCustomerCuntry.getText()+"'  WHERE CUSTOMER_NUMBER =  '"+ tfCustomerID.getText() +"'");
-                this.updateCustomerTable();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                    Statement stmt = conn2.createStatement();
+                    stmt.executeUpdate("UPDATE CUSTOMER SET TITLE= '" + tfCustomerTitle.getText() + "',FIRST_NAME= '" + tfCustomerFName.getText() + "',LAST_NAME= '" + tfCustomerLName.getText() + "',PHONE_NUMBER= '" + tfCustomerContactNo.getText() + "', DOB=  '" + tfCustomerDOB.getText() + "', EMAIL_ADDRESS = '" + tfCustomerEmail.getText() + "',MEMBERSHIP_TIER= '" + comboCustomerMemberTier.getSelectedItem().toString() + "' , MEMBERSHIP_CREDIT= '" + tfCustomerCredit.getText() + "',  POSTAL_CODE= '" + tfCustomerPostCode.getText() + "',STREET=  '" + tfCustomerStreet.getText() + "', CITY= '" + tfCustomerCity.getText() + "', COUNTRY=  '" + tfCustomerCuntry.getText() + "'  WHERE CUSTOMER_NUMBER =  '" + tfCustomerID.getText() + "'");
+                    this.updateCustomerTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            } else {
+                hotelErrorMessage.setText("No fields can be empty");
             }
 
-        } else {
-            hotelErrorMessage.setText("No fields can be empty");
-        }
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Customer ID, Contact number and membership credit have to contain in numbers only");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, " Customer ID, Contact number and membership credit have to contain in numbers only");
         }
     }//GEN-LAST:event_jButtonUpdateCutomerActionPerformed
 
     private void jButtonInsertCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertCutomerActionPerformed
         // TODO add your handling code here:
-        
-        try{
+
+        try {
             Integer.parseInt(tfCustomerID.getText().toString());
             Integer.parseInt(tfCustomerContactNo.getText().toString());
             Integer.parseInt(tfCustomerCredit.getText().toString());
 
-        if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
-                && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
-                && !tfCustomerTitle.getText().trim().equals("")&& !tfCustomerContactNo.getText().trim().equals("")
-                && !tfCustomerEmail.getText().trim().equals("")) {
-            Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("INSERT INTO CUSTOMER (CUSTOMER_NUMBER, TITLE,FIRST_NAME,LAST_NAME,PHONE_NUMBER, DOB, EMAIL_ADDRESS,"
-                        + "MEMBERSHIP_TIER, MEMBERSHIP_CREDIT,  POSTAL_CODE,STREET, CITY, COUNTRY) VALUES"
-                        + "("+ tfCustomerID.getText()+",'"+ tfCustomerTitle.getText()+"','"+ tfCustomerFName.getText()+"', "
-                        + "'"+ tfCustomerLName.getText()+"', '"+ tfCustomerContactNo.getText()+"', "
-                        + "'"+ tfCustomerDOB.getText()+"', '"+ tfCustomerEmail.getText()+"', "
-                        + "'"+ comboCustomerMemberTier.getSelectedItem().toString()+"' , '"+ tfCustomerCredit.getText()+"', '"+ tfCustomerPostCode.getText()+"',"
-                                + "'"+ tfCustomerStreet.getText()+"', '"+ tfCustomerCity.getText()+"', '"+ tfCustomerCuntry.getText()+"')");
-                this.updateCustomerTable();
-                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
+                    && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
+                    && !tfCustomerTitle.getText().trim().equals("") && !tfCustomerContactNo.getText().trim().equals("")
+                    && !tfCustomerEmail.getText().trim().equals("")) {
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("INSERT INTO CUSTOMER (CUSTOMER_NUMBER, TITLE,FIRST_NAME,LAST_NAME,PHONE_NUMBER, DOB, EMAIL_ADDRESS,"
+                            + "MEMBERSHIP_TIER, MEMBERSHIP_CREDIT,  POSTAL_CODE,STREET, CITY, COUNTRY) VALUES"
+                            + "(" + tfCustomerID.getText() + ",'" + tfCustomerTitle.getText() + "','" + tfCustomerFName.getText() + "', "
+                            + "'" + tfCustomerLName.getText() + "', '" + tfCustomerContactNo.getText() + "', "
+                            + "'" + tfCustomerDOB.getText() + "', '" + tfCustomerEmail.getText() + "', "
+                            + "'" + comboCustomerMemberTier.getSelectedItem().toString() + "' , '" + tfCustomerCredit.getText() + "', '" + tfCustomerPostCode.getText() + "',"
+                            + "'" + tfCustomerStreet.getText() + "', '" + tfCustomerCity.getText() + "', '" + tfCustomerCuntry.getText() + "')");
+                    this.updateCustomerTable();
+                    JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
             }
-        } else {
-            JCustomerErrorMsg.setText("No fields can be empty");
-        }
 
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Customer ID, Contact number and membership credit have to contain in numbers only");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Customer ID, Contact number and membership credit have to contain in numbers only");
         }
 
     }//GEN-LAST:event_jButtonInsertCutomerActionPerformed
@@ -2681,11 +2685,11 @@ if (this.jTableCustomer.getSelectedRow() < 0) {
 
     private void jButtonSearchGuestByNAmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchGuestByNAmeActionPerformed
         // TODO add your handling code here:
-         if (!tfGuestSearchGuestByNAme.getText().trim().equals("") ) {
+        if (!tfGuestSearchGuestByNAme.getText().trim().equals("")) {
             Statement stmt;
             try {
                 stmt = conn2.createStatement();
-                stmt.executeUpdate("select * FROM GUEST where upper(FIRST_NAME) =  Upper('"+ tfSearchGuestByName.getText()+"') OR upper(LAST_NAME) =  Upper('"+ tfSearchGuestByName.getText()+"')");
+                stmt.executeUpdate("select * FROM GUEST where upper(FIRST_NAME) =  Upper('" + tfSearchGuestByName.getText() + "') OR upper(LAST_NAME) =  Upper('" + tfSearchGuestByName.getText() + "')");
                 updateGuestTable();
                 stmt.close();
             } catch (Exception ex) {
@@ -2693,13 +2697,13 @@ if (this.jTableCustomer.getSelectedRow() < 0) {
             }
         } else {
             JCustomerErrorMsg.setText("Enter the name of the guest");
-        }    
+        }
     }//GEN-LAST:event_jButtonSearchGuestByNAmeActionPerformed
 
     private void jButtonDeleteCutomer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteCutomer1ActionPerformed
         // TODO add your handling code here:
-                int index = jTableGuest.getSelectedRow();
-        if(index<0){
+        int index = jTableGuest.getSelectedRow();
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
         }
@@ -2718,40 +2722,39 @@ if (this.jTableCustomer.getSelectedRow() < 0) {
 
     private void jButtonUpdateGuestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateGuestActionPerformed
         // TODO add your handling code here:
-        
-try{
-            Integer.parseInt(tfGuestID.getText().toString());
-            Integer.parseInt(tfGuestContactNo.getText().toString());
-if (this.jTableGuest.getSelectedRow() < 0) {
-            return;
-        }
-        if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
-                && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
-                 && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("") &&
-                 !tfGuestContactNo.getText().trim().equals("") ) {
 
-            Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("UPDATE GUEST set TITLE='"+tfGuestTitle.getText()+"',"
-                        + "FIRST_NAME='"+tfGuestFName.getText()+"',LAST_NAME='"+tfGuestLName.getText()+"',DOB='"+tfGuestDOB.getText()+"',"
-                        + "COUNTRY='"+tfGuestCuntry.getText() +"',CITY='"+ tfGuestCity.getText() +"',STREET='"+tfGuestStreet.getText()+"',"
-                        + "POSTAL_CODE='"+ tfGuestPostCode.getText() +"',PHONE_NUMBER='"+tfGuestContactNo.getText()+"',"
-                        + "EMAIL_ADDRESS='"+tfGuestEmail.getText()+"' where GUEST_NUMBER='"+tfGuestID.getText() + "'");
-                this.updateGuestTable();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+        try {
+            Integer.parseInt(tfGuestID.getText().toString());
+            if (this.jTableGuest.getSelectedRow() < 0) {
+                return;
+            }
+            if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
+                    && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
+                    && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("")
+                    && !tfGuestContactNo.getText().trim().equals("")) {
+
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("UPDATE GUEST set TITLE='" + tfGuestTitle.getText() + "',"
+                            + "FIRST_NAME='" + tfGuestFName.getText() + "',LAST_NAME='" + tfGuestLName.getText() + "',DOB='" + tfGuestDOB.getText() + "',"
+                            + "COUNTRY='" + tfGuestCuntry.getText() + "',CITY='" + tfGuestCity.getText() + "',STREET='" + tfGuestStreet.getText() + "',"
+                            + "POSTAL_CODE='" + tfGuestPostCode.getText() + "',PHONE_NUMBER='" + tfGuestContactNo.getText() + "',"
+                            + "EMAIL_ADDRESS='" + tfGuestEmail.getText() + "' where GUEST_NUMBER='" + tfGuestID.getText() + "'");
+                    this.updateGuestTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            } else {
+                hotelErrorMessage.setText("No fields can be empty");
             }
 
-        } else {
-            hotelErrorMessage.setText("No fields can be empty");
-        }
-
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Guest ID and contact number have to contain in numbers only");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, " Guest ID and contact number have to contain in numbers only");
         }
 
 
@@ -2759,52 +2762,51 @@ if (this.jTableGuest.getSelectedRow() < 0) {
 
     private void jButtonInsertGuestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertGuestActionPerformed
         // TODO add your handling code here:
-        try{
+        try {
             Integer.parseInt(tfGuestID.getText().toString());
             Integer.parseInt(tfGuestContactNo.getText().toString());
- if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
-                && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
-                 && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("") &&
-                 !tfGuestContactNo.getText().trim().equals("") ) {
-            Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("insert INTO GUEST (GUEST_NUMBER,TITLE,FIRST_NAME,LAST_NAME,DOB,COUNTRY,CITY,STREET,POSTAL_CODE,PHONE_NUMBER,EMAIL_ADDRESS) VALUES ('"+tfGuestID.getText()+"', '"+tfGuestTitle.getText()+"', '"+tfGuestFName.getText()+"','"+tfGuestLName.getText()+"', '"+tfGuestDOB.getText()+"', '"+ tfGuestCuntry.getText() +"', '"+ tfGuestCity.getText() +"','"+ tfGuestStreet.getText() +"','"+ tfGuestPostCode.getText() +"','"+ tfGuestContactNo.getText() +"','"+ tfGuestEmail.getText() +"')");
-                
-                this.updateGuestTable();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
+                    && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
+                    && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("")
+                    && !tfGuestContactNo.getText().trim().equals("")) {
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("insert INTO GUEST (GUEST_NUMBER,TITLE,FIRST_NAME,LAST_NAME,DOB,COUNTRY,CITY,STREET,POSTAL_CODE,PHONE_NUMBER,EMAIL_ADDRESS) VALUES ('" + tfGuestID.getText() + "', '" + tfGuestTitle.getText() + "', '" + tfGuestFName.getText() + "','" + tfGuestLName.getText() + "', '" + tfGuestDOB.getText() + "', '" + tfGuestCuntry.getText() + "', '" + tfGuestCity.getText() + "','" + tfGuestStreet.getText() + "','" + tfGuestPostCode.getText() + "','" + tfGuestContactNo.getText() + "','" + tfGuestEmail.getText() + "')");
+
+                    this.updateGuestTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
             }
-        } else {
-            JCustomerErrorMsg.setText("No fields can be empty");
-        }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Guest ID and contact number have to contain in numbers only");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Guest ID and contact number have to contain in numbers only");
         }
     }//GEN-LAST:event_jButtonInsertGuestActionPerformed
 
     private void jButtonInsertBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertBookingActionPerformed
-        try{
+        try {
             Integer.parseInt(tfBookingNumber.getText().toString());
             Integer.parseInt(tfBookingContactPerson.getText().toString());
             Integer.parseInt(tfBookingDiscount.getText().toString());
             Integer.parseInt(tfBookingTotalAmount.getText().toString());
-            if (!tfBookingNumber.getText().trim().equals("")&& !tfBookingCheckInDate.getText().trim().equals("")
-                     && !tfBookingCheckOutDate.getText().trim().equals("")&& ! tfBookingContactPerson.getText().trim().equals("")
-                     && !tfBookingContactEmail.getText().trim().equals("") && !tfBookingTotalAmount.getText().trim().equals("")
-                     && !tfBookingDiscount.getText().trim().equals("")
-                     ) {
+            if (!tfBookingNumber.getText().trim().equals("") && !tfBookingCheckInDate.getText().trim().equals("")
+                    && !tfBookingCheckOutDate.getText().trim().equals("") && !tfBookingContactPerson.getText().trim().equals("")
+                    && !tfBookingContactEmail.getText().trim().equals("") && !tfBookingTotalAmount.getText().trim().equals("")
+                    && !tfBookingDiscount.getText().trim().equals("")) {
                 Statement stmt;
                 try {
                     stmt = conn2.createStatement();
                     stmt.executeUpdate("INSERT INTO BOOKING (BOOKING_NUMBER, CUSTOMER_NUMBER,  HOTEL_ID, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, CONTACT_PERSON, "
-                            + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES (" + tfBookingNumber.getText()+", " 
-                            + tfBookingCustNo.getSelectedItem().toString()+", '" + tfBookingHotelID.getSelectedItem().toString()+"', " 
-                            + tfBookingRoomNo.getSelectedItem().toString()+", '" + tfBookingCheckInDate.getText()+"', '" + tfBookingCheckOutDate.getText()+"', "
-                            + tfBookingContactPerson.getText()+"', '" + tfBookingContactEmail.getText()+"', " + tfBookingTotalAmount.getText()+","
-                            + tfBookingDiscount.getText()+", '" + tfBookingPaymentStatus.getSelectedItem().toString()+"')");
+                            + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES (" + tfBookingNumber.getText() + ", "
+                            + tfBookingCustNo.getSelectedItem().toString() + ", '" + tfBookingHotelID.getSelectedItem().toString() + "', "
+                            + tfBookingRoomNo.getSelectedItem().toString() + ", '" + tfBookingCheckInDate.getText() + "', '" + tfBookingCheckOutDate.getText() + "', "
+                            + tfBookingContactPerson.getText() + "', '" + tfBookingContactEmail.getText() + "', " + tfBookingTotalAmount.getText() + ","
+                            + tfBookingDiscount.getText() + ", '" + tfBookingPaymentStatus.getSelectedItem().toString() + "')");
                     this.updateBookingTable();
                     JOptionPane.showMessageDialog(null, "Inserted Successfully!");
                     stmt.close();
@@ -2814,105 +2816,107 @@ if (this.jTableGuest.getSelectedRow() < 0) {
             } else {
                 JCustomerErrorMsg.setText("No fields can be empty");
             }
- 
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Booking ID, contact person, discount and total amount have to contain numbers only");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Booking ID, contact person, discount and total amount have to contain numbers only");
         }
 
     }//GEN-LAST:event_jButtonInsertBookingActionPerformed
 
-    private void updateBookingTable(){
+    private void updateBookingTable() {
         bookingQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT b FROM Booking b");
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
         bookingTableModel.fireTableDataChanged();
     }
 
-    private void updateMembershipTable(){
+    private void updateMembershipTable() {
         membershipQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT m FROM Membership m");
         membershipList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : membershipQuery.getResultList();
+        for(Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext();){
+            entityManager0.refresh(iterator.next());
+        }
         membershipTableModel.fireTableDataChanged();
     }
-    
-    private void updateElegibiliyTable(){
+
+    private void updateElegibiliyTable() {
         customerQuery2 = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
         customerList2 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery2.getResultList();
         eligibilityTableModel.fireTableDataChanged();
     }
-    
-    private void updatePaymentTable(){
-         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
+
+    private void updatePaymentTable() {
+        paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
         paymentTableModel.fireTableDataChanged();
     }
 
     private void jButtonUpdateBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateBookingActionPerformed
 
-
-        try{
+        try {
             Integer.parseInt(tfBookingNumber.getText().toString());
             Integer.parseInt(tfBookingContactPerson.getText().toString());
             Integer.parseInt(tfBookingDiscount.getText().toString());
             Integer.parseInt(tfBookingTotalAmount.getText().toString());
 
-        // TODO add your handling code here:
-        String bookNumber = tfBookingNumber.getText();
-        String checkInDate = tfBookingCheckInDate.getText();
-        String checkoutDate = tfBookingCheckOutDate.getText();
-        String contactEmail = tfBookingContactEmail.getText();
-        String contactPerson = tfBookingContactPerson.getText();
-        String bookingCustNo = tfBookingCustNo.getSelectedItem().toString();
-        String discount = tfBookingDiscount.getText();
-        String hotelId = tfBookingHotelID.getSelectedItem().toString();
-        String paidStatus = tfBookingPaymentStatus.getSelectedItem().toString();
-        String roomNumber = tfBookingRoomNo.getSelectedItem().toString();
-        String totalAmount = tfBookingTotalAmount.getText();
-        try {
-            this.entityManager0.getTransaction().begin();
-            Booking booking = this.entityManager0.find(Booking.class, new BookingPK(new BigInteger(bookNumber.toLowerCase()), new BigInteger(hotelId), new BigInteger(roomNumber)));
+            // TODO add your handling code here:
+            String bookNumber = tfBookingNumber.getText();
+            String checkInDate = tfBookingCheckInDate.getText();
+            String checkoutDate = tfBookingCheckOutDate.getText();
+            String contactEmail = tfBookingContactEmail.getText();
+            String contactPerson = tfBookingContactPerson.getText();
+            String bookingCustNo = tfBookingCustNo.getSelectedItem().toString();
+            String discount = tfBookingDiscount.getText();
+            String hotelId = tfBookingHotelID.getSelectedItem().toString();
+            String paidStatus = tfBookingPaymentStatus.getSelectedItem().toString();
+            String roomNumber = tfBookingRoomNo.getSelectedItem().toString();
+            String totalAmount = tfBookingTotalAmount.getText();
+            try {
+                this.entityManager0.getTransaction().begin();
+                Booking booking = this.entityManager0.find(Booking.class, new BookingPK(new BigInteger(bookNumber.toLowerCase()), new BigInteger(hotelId), new BigInteger(roomNumber)));
 
-            booking.setCheckinDate(checkInDate);
-            booking.setCheckoutDate(checkoutDate);
-            booking.setContactEmail(contactEmail);
-            booking.setContactPerson(contactPerson);
-            booking.setDiscountAmount(new BigInteger(discount));
-            booking.setPaymentStatus(paidStatus);
-            booking.setCustomerNumber(new BigInteger(bookingCustNo));
-            booking.setTotalAmount(new BigInteger(totalAmount));
+                booking.setCheckinDate(checkInDate);
+                booking.setCheckoutDate(checkoutDate);
+                booking.setContactEmail(contactEmail);
+                booking.setContactPerson(contactPerson);
+                booking.setDiscountAmount(new BigInteger(discount));
+                booking.setPaymentStatus(paidStatus);
+                booking.setCustomerNumber(new BigInteger(bookingCustNo));
+                booking.setTotalAmount(new BigInteger(totalAmount));
 
-            Customer customer = this.entityManager0.find(Customer.class, new BigDecimal(bookingCustNo));
-            if (customer != null) {
-                Membership membership = this.entityManager0.find(Membership.class, customer.getMembershipTier());
-                if(membership != null) {
-                    if ("PAID".equalsIgnoreCase(paidStatus)) {
-                        membership.setTierCredit(membership.getTierCredit().add(new BigInteger(50+"")));
-                    } else if ("CANCELED".equalsIgnoreCase(paidStatus)) {
-                        membership.setTierCredit(membership.getTierCredit().subtract(new BigInteger(50+"")));
+                Customer customer = this.entityManager0.find(Customer.class, new BigDecimal(bookingCustNo));
+                if (customer != null) {
+                    Membership membership = this.entityManager0.find(Membership.class, customer.getMembershipTier());
+                    if (membership != null) {
+                        if ("PAID".equalsIgnoreCase(paidStatus)) {
+                            membership.setTierCredit(membership.getTierCredit().add(new BigInteger(50 + "")));
+                        } else if ("CANCELED".equalsIgnoreCase(paidStatus)) {
+                            membership.setTierCredit(membership.getTierCredit().subtract(new BigInteger(50 + "")));
+                        }
                     }
                 }
+                this.entityManager0.getTransaction().commit();
+                updateBookingTable();
+                JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Successfully.");
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Failed.");
+
             }
-            this.entityManager0.getTransaction().commit();
-            updateBookingTable();
-            JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Successfully.");
+
         } catch (Exception e) {
-            e.printStackTrace();
-
-            JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Failed.");
-
-        }
-
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Booking ID, contact person, discount and total amount have to contain numbers only");
+            JOptionPane.showMessageDialog(null, " Booking ID, contact person, discount and total amount have to contain numbers only");
         }
 
     }//GEN-LAST:event_jButtonUpdateBookingActionPerformed
 
     private void jButtonDeleteBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteBookingActionPerformed
         int index = jTableBooking.getSelectedRow();
-        if(index<0){
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
-        }        Statement stmt;
+        }
+        Statement stmt;
         try {
 
             stmt = conn2.createStatement();
@@ -2927,7 +2931,7 @@ if (this.jTableGuest.getSelectedRow() < 0) {
 
     private void jButtonSearchMembershipBy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchMembershipBy1ActionPerformed
         // TODO add your handling code here:
-        try{
+        try {
             Integer.parseInt(jBookingSearchOccupancy.getText().toString());
             Integer.parseInt(jBookingSearchRangeFrom.getText().toString());
             Integer.parseInt(jBookingSearchRangeTo.getText().toString());
@@ -2994,17 +2998,15 @@ if (this.jTableGuest.getSelectedRow() < 0) {
                     availableRoomList.add(room);
                     updateAvailableRoom();
                 }
-    //            updateRoomTable();
+                //            updateRoomTable();
                 availableRoomModel.fireTableDataChanged();
                 stmt.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Occupancy, range from, and range to feilds have to contain numbers only");
         }
 
     }//GEN-LAST:event_jButtonSearchMembershipBy1ActionPerformed
@@ -3034,57 +3036,56 @@ if (this.jTableGuest.getSelectedRow() < 0) {
     }
 
     private void jButtonInsertPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertPaymentActionPerformed
-try{
+        try {
             Integer.parseInt(tfPaymentNo.getText().toString());
             Integer.parseInt(tfPaymentAmount.getText().toString());
- if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("") ) {
-            try {
-                Statement stmt = conn2.createStatement();
-                stmt.executeUpdate("INSERT INTO PAYMENT (PAYMENT_NUMBER,BOOKING_NUMBER, HOTEL_ID, ROOM_NUMBER,  PAYMENT_DATE, PAYMENT_METHOD, PAYMENT_AMOUNT) "
-                        + "VALUES ('"+ tfPaymentNo.getText() +"','"+ comboPaymentBookingNo.getSelectedItem().toString()+"','"+ comboPaymentHotelID.getSelectedItem().toString()+
-                        "',"+ comboPaymentRoomNo.getSelectedItem().toString()+", '"+ tfPaymentDate.getText() +"', '"+ comboPaymentMethod.getSelectedItem().toString()+"', "+ tfPaymentAmount.getText() +")");
-                this.updatePaymentTable();
-                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("")) {
+                try {
+                    Statement stmt = conn2.createStatement();
+                    stmt.executeUpdate("INSERT INTO PAYMENT (PAYMENT_NUMBER,BOOKING_NUMBER, HOTEL_ID, ROOM_NUMBER,  PAYMENT_DATE, PAYMENT_METHOD, PAYMENT_AMOUNT) "
+                            + "VALUES ('" + tfPaymentNo.getText() + "','" + comboPaymentBookingNo.getSelectedItem().toString() + "','" + comboPaymentHotelID.getSelectedItem().toString()
+                            + "'," + comboPaymentRoomNo.getSelectedItem().toString() + ", '" + tfPaymentDate.getText() + "', '" + comboPaymentMethod.getSelectedItem().toString() + "', " + tfPaymentAmount.getText() + ")");
+                    this.updatePaymentTable();
+                    JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
             }
-        } else {
-            JCustomerErrorMsg.setText("No fields can be empty");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Occupancy, range from, and range to feilds have to contain numbers only");
         }
 
-
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
-        }
-       
     }//GEN-LAST:event_jButtonInsertPaymentActionPerformed
 
     private void jButtonUpdatePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdatePaymentActionPerformed
-        try{
+        try {
             Integer.parseInt(tfPaymentNo.getText().toString());
             Integer.parseInt(tfPaymentAmount.getText().toString());
-        if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("") ) {
-            try {
-                Statement stmt = conn2.createStatement();
-                stmt.executeUpdate("UPDATE PAYMENT SET PAYMENT_NUMBER="+ tfPaymentNo.getText()+", BOOKING_NUMBER= "+ comboPaymentBookingNo.getSelectedItem().toString() +" ,HOTEL_ID = "+ comboPaymentHotelID.getSelectedItem().toString() +" ,ROOM_NUMBER = "+ comboPaymentRoomNo.getSelectedItem().toString() +" ,PAYMENT_DATE='"+ tfPaymentDate.getText() +"', PAYMENT_METHOD ='"+ comboPaymentMethod.getSelectedItem().toString()+"', PAYMENT_AMOUNT = "+ tfPaymentAmount.getText() +" where PAYMENT_NUMBER =" + tfPaymentNo.getText());
-                this.updatePaymentTable();
-                JOptionPane.showMessageDialog(null, "updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("")) {
+                try {
+                    Statement stmt = conn2.createStatement();
+                    stmt.executeUpdate("UPDATE PAYMENT SET PAYMENT_NUMBER=" + tfPaymentNo.getText() + ", BOOKING_NUMBER= " + comboPaymentBookingNo.getSelectedItem().toString() + " ,HOTEL_ID = " + comboPaymentHotelID.getSelectedItem().toString() + " ,ROOM_NUMBER = " + comboPaymentRoomNo.getSelectedItem().toString() + " ,PAYMENT_DATE='" + tfPaymentDate.getText() + "', PAYMENT_METHOD ='" + comboPaymentMethod.getSelectedItem().toString() + "', PAYMENT_AMOUNT = " + tfPaymentAmount.getText() + " where PAYMENT_NUMBER =" + tfPaymentNo.getText());
+                    this.updatePaymentTable();
+                    JOptionPane.showMessageDialog(null, "updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
             }
-        } else {
-            JCustomerErrorMsg.setText("No fields can be empty");
-        }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Occupancy, range from, and range to feilds have to contain numbers only");
         }
     }//GEN-LAST:event_jButtonUpdatePaymentActionPerformed
 
     private void jButtonDeletePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeletePaymentActionPerformed
         int index = jTablePayment.getSelectedRow();
-        if(index<0){
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
         }
@@ -3111,7 +3112,7 @@ try{
 
     private void tfHotelIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfHotelIdActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_tfHotelIdActionPerformed
 
     private void tfRoomCapacityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRoomCapacityActionPerformed
@@ -3122,7 +3123,7 @@ try{
         // TODO add your handling code here:
         String hotelId = tfBookingHotelID.getSelectedItem().toString();
         tfBookingRoomNo.removeAllItems();
-        for (Iterator<Room> iterator = this.roomList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Room> iterator = this.roomList.iterator(); iterator.hasNext();) {
             Room room = iterator.next();
             if (room.getRoomPK().getHotelId().toString().equals(hotelId)) {
                 tfBookingRoomNo.addItem(room.getRoomPK().getRoomNumber().toString());
@@ -3148,10 +3149,11 @@ try{
         // TODO add your handling code here:
 
         int index = jTableMembership.getSelectedRow();
-        if(index<0){
+        if (index < 0) {
             JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
-        }        Statement stmt;
+        }
+        Statement stmt;
         try {
 
             stmt = conn2.createStatement();
@@ -3165,57 +3167,57 @@ try{
     }//GEN-LAST:event_jButtonDeleteMembershipActionPerformed
 
     private void jButtonUpdateMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateMembershipActionPerformed
-     try{
-            Integer.parseInt(tfMembershipCredit.toString());
-            Integer.parseInt(tfMembershipDiscount.toString());
+        try {
+            Integer.parseInt(tfMembershipCredit.getText());
+            Double.parseDouble(tfMembershipDiscount.getText());
 
-            if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("") &&
-                 !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("") ){
-            try {
+            if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("")
+                    && !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("")) {
+                try {
 
-                Statement stmt = conn2.createStatement();
-                stmt.executeUpdate("UPDATE MEMBERSHIP SET MEMBERSHIP_TIER= '"+ tfMembershipTier.getText() +"', TIER_CREDIT="+ tfMembershipCredit.getText() +" , DISCOUNT='"+ tfMembershipDiscount.getText() +" ', REWARD='"+ tfMembershipRewards.getText() +" '  WHERE MEMBERSHIP_TIER= '"+ tfMembershipTier.getText() +"' ");
-                this.updateMembershipTable();
-                JOptionPane.showMessageDialog(null, "Updated Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+                    Statement stmt = conn2.createStatement();
+                    stmt.executeUpdate("UPDATE MEMBERSHIP SET MEMBERSHIP_TIER= '" + tfMembershipTier.getText() + "', TIER_CREDIT=" + tfMembershipCredit.getText() + " , DISCOUNT='" + tfMembershipDiscount.getText() + " ', REWARD='" + tfMembershipRewards.getText() + " '  WHERE MEMBERSHIP_TIER= '" + tfMembershipTier.getText() + "' ");
+                    this.updateMembershipTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
             } else {
                 hotelErrorMessage.setText("No fields can be empty");
             }
 
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null," Membership credit and discount have to contain numbers only");
-        }             
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Membership credit and discount have to contain numbers only");
+        }
     }//GEN-LAST:event_jButtonUpdateMembershipActionPerformed
 
     private void jButtonInsertMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembershipActionPerformed
-        
-    try{
-        Integer.parseInt(tfMembershipCredit.getText().toString());
-        Integer.parseInt(tfMembershipDiscount.getText().toString());
 
-        if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("") &&
-            !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("") && tfMembershipTier.getText().toString().equals("")) {
-            Statement stmt;
-            try {
-                stmt = conn2.createStatement();
-                stmt.executeUpdate("INSERT INTO MEMBERSHIP (MEMBERSHIP_TIER, TIER_CREDIT, DISCOUNT, REWARD) VALUES ('"+ tfMembershipTier.getText() +"', "+ tfMembershipCredit.getText() +", '"+ tfMembershipDiscount.getText() +"', '"+ tfMembershipRewards.getText() +"')");
-                this.updateMembershipTable();
-                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
-                stmt.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+        try {
+            Integer.parseInt(tfMembershipCredit.getText().toString());
+            Integer.parseInt(tfMembershipDiscount.getText().toString());
+
+            if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("")
+                    && !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("") && tfMembershipTier.getText().toString().equals("")) {
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("INSERT INTO MEMBERSHIP (MEMBERSHIP_TIER, TIER_CREDIT, DISCOUNT, REWARD) VALUES ('" + tfMembershipTier.getText() + "', " + tfMembershipCredit.getText() + ", '" + tfMembershipDiscount.getText() + "', '" + tfMembershipRewards.getText() + "')");
+                    this.updateMembershipTable();
+                    JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
             }
-        } else {
-            JCustomerErrorMsg.setText("No fields can be empty");
-        }
 
-       }catch(Exception e){
-           JOptionPane.showMessageDialog(null," Membership credit and discount have to contain numbers only");
-       }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, " Membership credit and discount have to contain numbers only");
+        }
 
     }//GEN-LAST:event_jButtonInsertMembershipActionPerformed
 
@@ -3224,18 +3226,18 @@ try{
     }//GEN-LAST:event_comboPaymentHotelIDActionPerformed
 
     private void comboPaymentBookingNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPaymentBookingNoActionPerformed
-            // TODO add your handling code here:
-            
-            String bookingNo = comboPaymentBookingNo.getSelectedItem().toString();
-            comboPaymentHotelID.removeAllItems();
-            comboPaymentRoomNo.removeAllItems();
-            for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext(); ) {
-                Booking b = iterator.next();
-                if (b.getBookingPK().getBookingNumber().toString().equals(bookingNo)) {
-                    comboPaymentHotelID.addItem(b.getBookingPK().getHotelId().toString());
-                    comboPaymentRoomNo.addItem(b.getBookingPK().getRoomNumber().toString());
-                }
+        // TODO add your handling code here:
+
+        String bookingNo = comboPaymentBookingNo.getSelectedItem().toString();
+        comboPaymentHotelID.removeAllItems();
+        comboPaymentRoomNo.removeAllItems();
+        for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext();) {
+            Booking b = iterator.next();
+            if (b.getBookingPK().getBookingNumber().toString().equals(bookingNo)) {
+                comboPaymentHotelID.addItem(b.getBookingPK().getHotelId().toString());
+                comboPaymentRoomNo.addItem(b.getBookingPK().getRoomNumber().toString());
             }
+        }
             }//GEN-LAST:event_comboPaymentBookingNoActionPerformed
 
     private void tfHotelIdPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tfHotelIdPropertyChange
@@ -3277,7 +3279,6 @@ try{
         });
     }
 
-    
     class HotelTableModel extends AbstractTableModel {
 
         String columns[] = {"ID", "Name", "Tier", "Room Capacity", "Construction Year", "Address", "Country", "City", "Email", "Contact No."};
@@ -3376,7 +3377,7 @@ try{
     class CustomerTableModel extends AbstractTableModel {
 
         private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS", "MEMBERSHIP_CREDIT",
-                "MEMBERSHIP_TIER", "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
+            "MEMBERSHIP_TIER", "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
 
         @Override
         public int getRowCount() {
@@ -3432,7 +3433,7 @@ try{
     class GuestTableModel extends AbstractTableModel {
 
         private String columns[] = {"GUEST_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS",
-                "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
+            "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
 
         @Override
         public int getRowCount() {
@@ -3521,8 +3522,8 @@ try{
 
     class BookingTableModel extends AbstractTableModel {
 
-        private String columns[] = {"Booking No","customer No","Hotel ID","Room No", "CHECKIN_DATE", "CHECKOUT_DATE",
-                "CONTACT_PERSON", "CONTACT_EMAIL", "TOTAL_AMOUNT", "DISCOUNT_AMOUNT", "PAYMENT_STATUS"};
+        private String columns[] = {"Booking No", "customer No", "Hotel ID", "Room No", "CHECKIN_DATE", "CHECKOUT_DATE",
+            "CONTACT_PERSON", "CONTACT_EMAIL", "TOTAL_AMOUNT", "DISCOUNT_AMOUNT", "PAYMENT_STATUS"};
 
         @Override
         public int getRowCount() {
@@ -3617,61 +3618,61 @@ try{
 
     class EligibilityTableModel extends AbstractTableModel {
 
-    private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS", "MEMBERSHIP_CREDIT",
+        private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS", "MEMBERSHIP_CREDIT",
             "MEMBERSHIP_TIER", "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
 
-    @Override
-    public int getRowCount() {
-        return customerList.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columns.length;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columns[column];
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Customer customer = customerList.get(rowIndex);
-        switch (columnIndex) {
-            case 0:
-                return customer.getCustomerNumber();
-            case 1:
-                return customer.getTitle();
-            case 2:
-                return customer.getFirstName();
-            case 3:
-                return customer.getLastName();
-            case 4:
-                return customer.getPhoneNumber();
-            case 5:
-                return customer.getDob();
-            case 6:
-                return customer.getEmailAddress();
-            case 7:
-                return customer.getMembershipCredit();
-            case 8:
-                return customer.getMembershipTier();
-            case 9:
-                return customer.getPostalCode();
-            case 10:
-                return customer.getStreet();
-            case 11:
-                return customer.getCity();
-            case 12:
-                return customer.getCountry();
+        @Override
+        public int getRowCount() {
+            return customerList.size();
         }
-        return null;
+
+        @Override
+        public int getColumnCount() {
+            return columns.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columns[column];
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Customer customer = customerList.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return customer.getCustomerNumber();
+                case 1:
+                    return customer.getTitle();
+                case 2:
+                    return customer.getFirstName();
+                case 3:
+                    return customer.getLastName();
+                case 4:
+                    return customer.getPhoneNumber();
+                case 5:
+                    return customer.getDob();
+                case 6:
+                    return customer.getEmailAddress();
+                case 7:
+                    return customer.getMembershipCredit();
+                case 8:
+                    return customer.getMembershipTier();
+                case 9:
+                    return customer.getPostalCode();
+                case 10:
+                    return customer.getStreet();
+                case 11:
+                    return customer.getCity();
+                case 12:
+                    return customer.getCountry();
+            }
+            return null;
+        }
+
     }
 
-}
 
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> JComboCustomerByMembership;
     private javax.swing.JLabel JCustomerErrorMsg;
