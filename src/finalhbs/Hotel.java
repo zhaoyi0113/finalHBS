@@ -2393,7 +2393,7 @@ public class Hotel extends javax.swing.JFrame {
     private void updateCustomerTable() {
         customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
         customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
-        for(Iterator<Customer> iterator = customerList.iterator(); iterator.hasNext();){
+        for (Iterator<Customer> iterator = customerList.iterator(); iterator.hasNext();) {
             entityManager0.refresh(iterator.next());
         }
         customerTableModel.fireTableDataChanged();
@@ -2402,7 +2402,7 @@ public class Hotel extends javax.swing.JFrame {
     private void updateGuestTable() {
         guestQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT g FROM Guest g");
         guestList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : guestQuery.getResultList();
-        for(Iterator<Guest> iterator = guestList.iterator(); iterator.hasNext();){
+        for (Iterator<Guest> iterator = guestList.iterator(); iterator.hasNext();) {
             entityManager0.refresh(iterator.next());
         }
         guestTableModel.fireTableDataChanged();
@@ -2801,12 +2801,18 @@ public class Hotel extends javax.swing.JFrame {
                 Statement stmt;
                 try {
                     stmt = conn2.createStatement();
-                    stmt.executeUpdate("INSERT INTO BOOKING (BOOKING_NUMBER, CUSTOMER_NUMBER,  HOTEL_ID, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, CONTACT_PERSON, "
-                            + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES (" + tfBookingNumber.getText() + ", "
-                            + tfBookingCustNo.getSelectedItem().toString() + ", '" + tfBookingHotelID.getSelectedItem().toString() + "', "
-                            + tfBookingRoomNo.getSelectedItem().toString() + ", '" + tfBookingCheckInDate.getText() + "', '" + tfBookingCheckOutDate.getText() + "', "
+                    String sql = "INSERT INTO BOOKING (BOOKING_NUMBER, CUSTOMER_NUMBER,  HOTEL_ID, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, CONTACT_PERSON, "
+                            + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES ("
+                            + tfBookingNumber.getText() + ", "
+                            + tfBookingCustNo.getSelectedItem().toString() 
+                            + ", '" + tfBookingHotelID.getSelectedItem().toString() + "', "
+                            + tfBookingRoomNo.getSelectedItem().toString() + ", '" 
+                            + tfBookingCheckInDate.getText() + "', '" 
+                            + tfBookingCheckOutDate.getText() + "', '"
                             + tfBookingContactPerson.getText() + "', '" + tfBookingContactEmail.getText() + "', " + tfBookingTotalAmount.getText() + ","
-                            + tfBookingDiscount.getText() + ", '" + tfBookingPaymentStatus.getSelectedItem().toString() + "')");
+                            + tfBookingDiscount.getText() + ", '" + tfBookingPaymentStatus.getSelectedItem().toString() + "')";
+                    System.out.println("sql = " + sql);
+                    stmt.executeUpdate(sql);
                     this.updateBookingTable();
                     JOptionPane.showMessageDialog(null, "Inserted Successfully!");
                     stmt.close();
@@ -2826,13 +2832,16 @@ public class Hotel extends javax.swing.JFrame {
     private void updateBookingTable() {
         bookingQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT b FROM Booking b");
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
+        for (Iterator<Booking> iterator = bookingList.iterator(); iterator.hasNext();) {
+            entityManager0.refresh(iterator.next());
+        }
         bookingTableModel.fireTableDataChanged();
     }
 
     private void updateMembershipTable() {
         membershipQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT m FROM Membership m");
         membershipList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : membershipQuery.getResultList();
-        for(Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext();){
+        for (Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext();) {
             entityManager0.refresh(iterator.next());
         }
         membershipTableModel.fireTableDataChanged();
@@ -2847,6 +2856,9 @@ public class Hotel extends javax.swing.JFrame {
     private void updatePaymentTable() {
         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
+        for(Iterator<Payment> iterator = paymentList.iterator(); iterator.hasNext();){
+            entityManager0.refresh(iterator.next());
+        }
         paymentTableModel.fireTableDataChanged();
     }
 
