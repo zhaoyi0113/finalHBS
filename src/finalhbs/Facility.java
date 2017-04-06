@@ -5,6 +5,8 @@
  */
 package finalhbs;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -16,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -31,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Facility.findByFacilityNumber", query = "SELECT f FROM Facility f WHERE f.facilityNumber = :facilityNumber")
     , @NamedQuery(name = "Facility.findByFacilityDescription", query = "SELECT f FROM Facility f WHERE f.facilityDescription = :facilityDescription")})
 public class Facility implements Serializable {
+
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -55,7 +61,9 @@ public class Facility implements Serializable {
     }
 
     public void setFacilityNumber(BigDecimal facilityNumber) {
+        BigDecimal oldFacilityNumber = this.facilityNumber;
         this.facilityNumber = facilityNumber;
+        changeSupport.firePropertyChange("facilityNumber", oldFacilityNumber, facilityNumber);
     }
 
     public String getFacilityDescription() {
@@ -63,7 +71,9 @@ public class Facility implements Serializable {
     }
 
     public void setFacilityDescription(String facilityDescription) {
+        String oldFacilityDescription = this.facilityDescription;
         this.facilityDescription = facilityDescription;
+        changeSupport.firePropertyChange("facilityDescription", oldFacilityDescription, facilityDescription);
     }
 
     @XmlTransient
@@ -98,6 +108,14 @@ public class Facility implements Serializable {
     @Override
     public String toString() {
         return "finalhbs.Facility[ facilityNumber=" + facilityNumber + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }

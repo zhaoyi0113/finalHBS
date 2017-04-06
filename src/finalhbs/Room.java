@@ -159,7 +159,9 @@ public class Room implements Serializable {
     }
 
     public void setGuestCapicity(BigInteger guestCapicity) {
+        BigInteger oldGuestCapicity = this.guestCapicity;
         this.guestCapicity = guestCapicity;
+        changeSupport.firePropertyChange("guestCapicity", oldGuestCapicity, guestCapicity);
     }
 
     @XmlTransient

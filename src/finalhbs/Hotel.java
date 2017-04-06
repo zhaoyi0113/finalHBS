@@ -8,7 +8,6 @@ package finalhbs;
 import java.math.BigDecimal;
 
 import oracle.jdbc.OracleDriver;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -38,6 +37,7 @@ public class Hotel extends javax.swing.JFrame {
     private BookingTableModel bookingTableModel;
     private PaymentTableModel paymentTableModel;
     private RoomTableModel availableRoomModel;
+    private EligibilityTableModel eligibilityTableModel;
 
     /**
      * Creates new form Hotel
@@ -72,6 +72,8 @@ public class Hotel extends javax.swing.JFrame {
         this.jTableBooking.setModel(bookingTableModel);
         paymentTableModel = new PaymentTableModel();
         this.jTablePayment.setModel(paymentTableModel);
+        eligibilityTableModel = new EligibilityTableModel();
+        this.JTableEligibility.setModel(eligibilityTableModel);
         for (Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext(); ) {
             Hotel_1 hotel = iterator.next();
             tfRoomHotelId.addItem(hotel.getHotelId().intValue() + "");
@@ -89,10 +91,20 @@ public class Hotel extends javax.swing.JFrame {
             }
         }
         for (Iterator<Customer> iterator = this.customerList.iterator(); iterator.hasNext(); ) {
-
             Customer cu = iterator.next();
             tfBookingCustNo.addItem(cu.getCustomerNumber().toString());
         }
+        
+        for (Iterator<Membership> iterator = this.membershipList.iterator(); iterator.hasNext(); ) {
+            Membership m = iterator.next();
+            comboCustomerMemberTier.addItem(m.getMembershipTier().toString());
+        }
+        
+        for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext(); ) {
+            Booking b = iterator.next();
+            comboPaymentBookingNo.addItem(b.getBookingPK().getBookingNumber().toString());
+        }
+  
     }
 
     /**
@@ -201,7 +213,7 @@ public class Hotel extends javax.swing.JFrame {
                 ;
                 tfMembershipRewards.setText(membership.getReward());
                 ;
-                tfMembershipTier.setText(membership.getTierCredit().toString());
+                tfMembershipTier.setText(membership.getMembershipTier().toString());
                 ;
 
             }
@@ -240,17 +252,17 @@ public class Hotel extends javax.swing.JFrame {
                 }
                 Payment payment = paymentList.get(index);
                 tfPaymentAmount.setText(payment.getPaymentAmount().toString());
-                tfPaymentBookingNo.setSelectedItem(payment.getBookingNumber());
+                comboPaymentBookingNo.setSelectedItem(payment.getBookingNumber());
                 ;
                 tfPaymentDate.setText(payment.getPaymentDate());
                 ;
-                tfPaymentHotelID.setSelectedItem(payment.getHotelId());
+                comboPaymentHotelID.setSelectedItem(payment.getHotelId());
                 ;
-                tfPaymentMethod.setSelectedItem(payment.getPaymentMethod());
+                comboPaymentMethod.setSelectedItem(payment.getPaymentMethod());
                 ;
                 tfPaymentNo.setText(payment.getPaymentNumber().toString());
                 ;
-                tfPaymentRoomNo.setSelectedItem(payment.getRoomNumber());
+                comboPaymentRoomNo.setSelectedItem(payment.getRoomNumber());
                 ;
 
             }
@@ -258,6 +270,10 @@ public class Hotel extends javax.swing.JFrame {
 
         for (Iterator<Facility> iterator = facilityList.iterator(); iterator.hasNext(); ) {
             this.tfRoomFacilityCombo.addItem(iterator.next().getFacilityDescription());
+        }
+        
+        for (Iterator<Membership> iterator = membershipList.iterator(); iterator.hasNext(); ) {
+            this.JComboCustomerByMembership.addItem(iterator.next().getMembershipTier());
         }
     }
 
@@ -302,11 +318,13 @@ public class Hotel extends javax.swing.JFrame {
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
         paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
+        roomQuery6 = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
+        availableRoomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery6.getResultList();
         facilityQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT f FROM Facility f");
         facilityList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : facilityQuery.getResultList();
-        ;
+        customerQuery2 = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
+        customerList2 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery2.getResultList();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel24 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -357,7 +375,7 @@ public class Hotel extends javax.swing.JFrame {
         jLabel36 = new javax.swing.JLabel();
         tfRoomHotelId = new javax.swing.JComboBox<>();
         jLabel46 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboRoomType = new javax.swing.JComboBox<>();
         tfRoomCapacity = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
@@ -391,7 +409,7 @@ public class Hotel extends javax.swing.JFrame {
         jButtonUpdateCutomer = new javax.swing.JButton();
         jButtonDeleteCutomer = new javax.swing.JButton();
         hotelFieldsErrorMessage2 = new javax.swing.JLabel();
-        jLabel29 = new javax.swing.JLabel();
+        JCustomerErrorMsg = new javax.swing.JLabel();
         tfCustomerPostCode = new javax.swing.JTextField();
         jLabel31 = new javax.swing.JLabel();
         tfCustomerCredit = new javax.swing.JTextField();
@@ -402,7 +420,7 @@ public class Hotel extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableCustomer = new javax.swing.JTable();
         jLabel30 = new javax.swing.JLabel();
-        tfHotelTiercombo1 = new javax.swing.JComboBox<>();
+        JComboCustomerByMembership = new javax.swing.JComboBox<>();
         jButtonSearchCutomerBy = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -424,11 +442,11 @@ public class Hotel extends javax.swing.JFrame {
         jLabel42 = new javax.swing.JLabel();
         tfGuestStreet = new javax.swing.JTextField();
         jLabel43 = new javax.swing.JLabel();
-        jButtonInsertCutomer1 = new javax.swing.JButton();
-        jButtonUpdateCutomer1 = new javax.swing.JButton();
+        jButtonInsertGuest = new javax.swing.JButton();
+        jButtonUpdateGuest = new javax.swing.JButton();
         jButtonDeleteCutomer1 = new javax.swing.JButton();
         hotelFieldsErrorMessage3 = new javax.swing.JLabel();
-        jLabel44 = new javax.swing.JLabel();
+        jGuestErrorMsg = new javax.swing.JLabel();
         tfGuestPostCode = new javax.swing.JTextField();
         jLabel45 = new javax.swing.JLabel();
         tfGuestDOB = new javax.swing.JTextField();
@@ -436,29 +454,30 @@ public class Hotel extends javax.swing.JFrame {
         jPanel12 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableGuest = new javax.swing.JTable();
-        jLabel48 = new javax.swing.JLabel();
-        jButtonSearchCutomerBy1 = new javax.swing.JButton();
+        tfGuestSearchGuestByNAme = new javax.swing.JLabel();
+        jButtonSearchGuestByNAme = new javax.swing.JButton();
         tfSearchGuestByName = new javax.swing.JTextField();
         jPanel13 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
-        jLabel49 = new javax.swing.JLabel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel25 = new javax.swing.JPanel();
         tfMembershipTier = new javax.swing.JTextField();
+        jLabel49 = new javax.swing.JLabel();
         tfMembershipCredit = new javax.swing.JTextField();
-        jLabel50 = new javax.swing.JLabel();
+        tfMembershipDiscount = new javax.swing.JTextField();
         tfMembershipRewards = new javax.swing.JTextField();
         jLabel51 = new javax.swing.JLabel();
-        tfMembershipDiscount = new javax.swing.JTextField();
+        jLabel50 = new javax.swing.JLabel();
         jLabel52 = new javax.swing.JLabel();
         jButtonInsertMembership = new javax.swing.JButton();
         jButtonUpdateMembership = new javax.swing.JButton();
         jButtonDeleteMembership = new javax.swing.JButton();
-        hotelFieldsErrorMessage4 = new javax.swing.JLabel();
-        jPanel15 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTableMembership = new javax.swing.JTable();
+        jPanel26 = new javax.swing.JPanel();
         jLabel61 = new javax.swing.JLabel();
         jButtonSearchMembershipBy = new javax.swing.JButton();
-        membershipSearchField = new javax.swing.JTextField();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        JTableEligibility = new javax.swing.JTable();
         jPanel16 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
@@ -467,9 +486,9 @@ public class Hotel extends javax.swing.JFrame {
         jLabel53 = new javax.swing.JLabel();
         tfBookingNumber = new javax.swing.JTextField();
         jLabel54 = new javax.swing.JLabel();
-        jButtonInsertMembership1 = new javax.swing.JButton();
-        jButtonUpdateMembership1 = new javax.swing.JButton();
-        jButtonDeleteMembership1 = new javax.swing.JButton();
+        jButtonInsertBooking = new javax.swing.JButton();
+        jButtonUpdateBooking = new javax.swing.JButton();
+        jButtonDeleteBooking = new javax.swing.JButton();
         hotelFieldsErrorMessage5 = new javax.swing.JLabel();
         jLabel56 = new javax.swing.JLabel();
         tfBookingHotelID = new javax.swing.JComboBox<>();
@@ -495,16 +514,16 @@ public class Hotel extends javax.swing.JFrame {
         jPanel20 = new javax.swing.JPanel();
         jButtonSearchMembershipBy1 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jBookingSearchCheckinDate = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jBookingSearchCheckoutDate = new javax.swing.JTextField();
         jLabel74 = new javax.swing.JLabel();
         jLabel75 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        jBookingSearchOccupancy = new javax.swing.JTextField();
         jLabel76 = new javax.swing.JLabel();
         jLabel77 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        jBookingSearchRangeFrom = new javax.swing.JTextField();
+        jBookingSearchRangeTo = new javax.swing.JTextField();
         jLabel78 = new javax.swing.JLabel();
         jLabel79 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -515,21 +534,21 @@ public class Hotel extends javax.swing.JFrame {
         jLabel62 = new javax.swing.JLabel();
         tfPaymentNo = new javax.swing.JTextField();
         jLabel66 = new javax.swing.JLabel();
-        jButtonInsertMembership2 = new javax.swing.JButton();
-        jButtonUpdateMembership2 = new javax.swing.JButton();
-        jButtonDeleteMembership2 = new javax.swing.JButton();
+        jButtonInsertPayment = new javax.swing.JButton();
+        jButtonUpdatePayment = new javax.swing.JButton();
+        jButtonDeletePayment = new javax.swing.JButton();
         hotelFieldsErrorMessage6 = new javax.swing.JLabel();
-        tfPaymentBookingNo = new javax.swing.JComboBox<>();
+        comboPaymentBookingNo = new javax.swing.JComboBox<>();
         jLabel68 = new javax.swing.JLabel();
-        tfPaymentHotelID = new javax.swing.JComboBox<>();
-        tfPaymentRoomNo = new javax.swing.JComboBox<>();
+        comboPaymentHotelID = new javax.swing.JComboBox<>();
+        comboPaymentRoomNo = new javax.swing.JComboBox<>();
         jLabel67 = new javax.swing.JLabel();
         tfPaymentDate = new javax.swing.JTextField();
         jLabel69 = new javax.swing.JLabel();
         jLabel70 = new javax.swing.JLabel();
         jLabel71 = new javax.swing.JLabel();
         tfPaymentAmount = new javax.swing.JTextField();
-        tfPaymentMethod = new javax.swing.JComboBox<>();
+        comboPaymentMethod = new javax.swing.JComboBox<>();
         jLabel72 = new javax.swing.JLabel();
         jLabel73 = new javax.swing.JLabel();
         jPanel23 = new javax.swing.JPanel();
@@ -537,19 +556,6 @@ public class Hotel extends javax.swing.JFrame {
         jTablePayment = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
-        jPanel24.setLayout(jPanel24Layout);
-        jPanel24Layout.setHorizontalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 2087, Short.MAX_VALUE)
-        );
-        jPanel24Layout.setVerticalGroup(
-            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Main screen", jPanel24);
 
         jLabel1.setText("Hotel ID:");
 
@@ -559,6 +565,11 @@ public class Hotel extends javax.swing.JFrame {
         tfHotelId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfHotelIdActionPerformed(evt);
+            }
+        });
+        tfHotelId.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tfHotelIdPropertyChange(evt);
             }
         });
 
@@ -891,7 +902,7 @@ public class Hotel extends javax.swing.JFrame {
         jLabel46.setText("Room Type: ");
         jLabel46.setToolTipText("");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Single", "Double" }));
+        jComboRoomType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Single", "Double" }));
 
         tfRoomCapacity.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
         tfRoomCapacity.addActionListener(new java.awt.event.ActionListener() {
@@ -942,7 +953,7 @@ public class Hotel extends javax.swing.JFrame {
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tfRoomDesc)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboRoomType, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addComponent(RoomErrorMessage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -961,7 +972,7 @@ public class Hotel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel46)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboRoomType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
@@ -974,16 +985,16 @@ public class Hotel extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(tfRoomCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(131, 131, 131)
+                .addGap(164, 164, 164)
                 .addComponent(hotelFieldsErrorMessage1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(RoomErrorMessage)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonInsertRoom)
                     .addComponent(jButtonUpdateRoom)
                     .addComponent(jButtonDeleteRoom))
-                .addGap(53, 53, 53))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel24.setText("Search by Facility: ");
@@ -1026,26 +1037,26 @@ public class Hotel extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1560, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1568, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel24)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfRoomFacilityCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfRoomFacilityCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jButtonSearchRoomBy)
-                        .addContainerGap())))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearchRoomBy)
                     .addComponent(tfRoomFacilityCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel24))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1061,12 +1072,12 @@ public class Hotel extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Room", jPanel4);
@@ -1091,7 +1102,6 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel28.setText("Contcat no:");
 
-        comboCustomerMemberTier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Platinum", "Gold", "Bronze" }));
         comboCustomerMemberTier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboCustomerMemberTierActionPerformed(evt);
@@ -1119,7 +1129,7 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
-        jLabel29.setText(".");
+        JCustomerErrorMsg.setText(".");
 
         jLabel31.setText("Post code:");
 
@@ -1165,10 +1175,8 @@ public class Hotel extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(tfCustomerEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(hotelFieldsErrorMessage2)
-                                    .addComponent(jLabel29))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(hotelFieldsErrorMessage2)
+                                .addGap(14, 14, 14)
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel8Layout.createSequentialGroup()
                                         .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1197,11 +1205,14 @@ public class Hotel extends javax.swing.JFrame {
                                 .addComponent(tfCustomerDOB, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonInsertCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(jButtonUpdateCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(jButtonDeleteCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(JCustomerErrorMsg, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jButtonInsertCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jButtonUpdateCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(31, 31, 31)
+                                .addComponent(jButtonDeleteCutomer, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -1247,10 +1258,9 @@ public class Hotel extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGap(78, 78, 78)
                         .addComponent(hotelFieldsErrorMessage2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel29))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel31)
                             .addComponent(tfCustomerPostCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1266,12 +1276,14 @@ public class Hotel extends javax.swing.JFrame {
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel25)
                             .addComponent(tfCustomerCuntry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
+                .addComponent(JCustomerErrorMsg)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonInsertCutomer)
                     .addComponent(jButtonUpdateCutomer)
                     .addComponent(jButtonDeleteCutomer))
-                .addGap(86, 86, 86))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         jScrollPane2.setViewportView(jTableCustomer);
@@ -1289,15 +1301,15 @@ public class Hotel extends javax.swing.JFrame {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1586, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1600, Short.MAX_VALUE)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel30)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tfHotelTiercombo1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(JComboCustomerByMembership, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonSearchCutomerBy)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(951, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1305,10 +1317,11 @@ public class Hotel extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
-                    .addComponent(tfHotelTiercombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JComboCustomerByMembership, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonSearchCutomerBy))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(98, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -1352,17 +1365,17 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel43.setText("Contcat no:");
 
-        jButtonInsertCutomer1.setText("Insert");
-        jButtonInsertCutomer1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInsertGuest.setText("Insert");
+        jButtonInsertGuest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertCutomer1ActionPerformed(evt);
+                jButtonInsertGuestActionPerformed(evt);
             }
         });
 
-        jButtonUpdateCutomer1.setText("Update");
-        jButtonUpdateCutomer1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonUpdateGuest.setText("Update");
+        jButtonUpdateGuest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUpdateCutomer1ActionPerformed(evt);
+                jButtonUpdateGuestActionPerformed(evt);
             }
         });
 
@@ -1373,7 +1386,7 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
-        jLabel44.setText(".");
+        jGuestErrorMsg.setText(".");
 
         jLabel45.setText("Post code:");
 
@@ -1384,66 +1397,66 @@ public class Hotel extends javax.swing.JFrame {
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addComponent(hotelFieldsErrorMessage3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfGuestID, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestFName, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestLName, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel43, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestContactNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                                .addComponent(tfGuestID, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfGuestStreet, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tfGuestCity, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestFName, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestLName, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel43, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestContactNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel42, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(hotelFieldsErrorMessage3)
-                                    .addComponent(jLabel44))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel11Layout.createSequentialGroup()
-                                        .addComponent(jLabel39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(tfGuestStreet, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                        .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(tfGuestCity, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                        .addComponent(jLabel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(tfGuestCuntry, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(jLabel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tfGuestPostCode, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel11Layout.createSequentialGroup()
-                                .addComponent(jLabel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfGuestDOB, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jGuestErrorMsg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tfGuestCuntry, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonInsertCutomer1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfGuestPostCode, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfGuestDOB, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addGap(125, 125, 125)
+                        .addComponent(jButtonInsertGuest, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
-                        .addComponent(jButtonUpdateCutomer1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonUpdateGuest, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
                         .addComponent(jButtonDeleteCutomer1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -1451,7 +1464,7 @@ public class Hotel extends javax.swing.JFrame {
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(41, 41, 41)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel34)
                     .addComponent(tfGuestID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1480,44 +1493,49 @@ public class Hotel extends javax.swing.JFrame {
                     .addComponent(jLabel42)
                     .addComponent(tfGuestEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(hotelFieldsErrorMessage3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel44))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel45)
-                            .addComponent(tfGuestPostCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel39)
-                            .addComponent(tfGuestStreet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel41)
-                            .addComponent(tfGuestCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel40)
-                            .addComponent(tfGuestCuntry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonInsertCutomer1)
-                    .addComponent(jButtonUpdateCutomer1)
+                    .addComponent(jLabel45)
+                    .addComponent(tfGuestPostCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel39)
+                    .addComponent(tfGuestStreet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel41)
+                    .addComponent(tfGuestCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel40)
+                    .addComponent(tfGuestCuntry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jGuestErrorMsg)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonInsertGuest)
+                    .addComponent(jButtonUpdateGuest)
                     .addComponent(jButtonDeleteCutomer1))
-                .addGap(119, 119, 119))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hotelFieldsErrorMessage3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jTableGuest.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         jScrollPane4.setViewportView(jTableGuest);
 
-        jLabel48.setText("Search by Name: ");
+        tfGuestSearchGuestByNAme.setText("Search by Name: ");
 
-        jButtonSearchCutomerBy1.setText("Search");
-        jButtonSearchCutomerBy1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSearchGuestByNAme.setText("Search");
+        jButtonSearchGuestByNAme.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSearchCutomerBy1ActionPerformed(evt);
+                jButtonSearchGuestByNAmeActionPerformed(evt);
             }
         });
 
@@ -1525,23 +1543,23 @@ public class Hotel extends javax.swing.JFrame {
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1565, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1582, Short.MAX_VALUE)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel48)
+                .addComponent(tfGuestSearchGuestByNAme)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfSearchGuestByName, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonSearchCutomerBy1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButtonSearchGuestByNAme)
+                .addContainerGap(980, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel48)
-                    .addComponent(jButtonSearchCutomerBy1)
+                    .addComponent(tfGuestSearchGuestByNAme)
+                    .addComponent(jButtonSearchGuestByNAme)
                     .addComponent(tfSearchGuestByName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1553,30 +1571,30 @@ public class Hotel extends javax.swing.JFrame {
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 123, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Guest", jPanel10);
 
         jLabel49.setText("membership Tier:");
 
-        jLabel50.setText("Tier credit:");
-
         jLabel51.setText("Rewards:");
+
+        jLabel50.setText("Tier credit:");
 
         jLabel52.setText("Discount:");
 
@@ -1601,73 +1619,65 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(jLabel49)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                                .addComponent(tfMembershipTier, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                                .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfMembershipCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                                .addComponent(jLabel52, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfMembershipDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(jLabel51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfMembershipRewards, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(hotelFieldsErrorMessage4)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+        jScrollPane5.setViewportView(jTableMembership);
+
+        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
+        jPanel25.setLayout(jPanel25Layout);
+        jPanel25Layout.setHorizontalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel52, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel49, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel25Layout.createSequentialGroup()
                         .addComponent(jButtonInsertMembership, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
                         .addComponent(jButtonUpdateMembership, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
-                        .addComponent(jButtonDeleteMembership, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jButtonDeleteMembership, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(tfMembershipTier, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfMembershipCredit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfMembershipDiscount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfMembershipRewards, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1579, Short.MAX_VALUE))
         );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
+        jPanel25Layout.setVerticalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel49)
-                    .addComponent(tfMembershipTier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel50)
-                    .addComponent(tfMembershipCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel52)
-                    .addComponent(tfMembershipDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel51)
-                    .addComponent(tfMembershipRewards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(199, 199, 199)
-                .addComponent(hotelFieldsErrorMessage4)
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonInsertMembership)
-                    .addComponent(jButtonUpdateMembership)
-                    .addComponent(jButtonDeleteMembership))
-                .addGap(119, 119, 119))
+                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel25Layout.createSequentialGroup()
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel49)
+                            .addComponent(tfMembershipTier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel50)
+                            .addComponent(tfMembershipCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel52)
+                            .addComponent(tfMembershipDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel51)
+                            .addComponent(tfMembershipRewards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonInsertMembership)
+                            .addComponent(jButtonUpdateMembership)
+                            .addComponent(jButtonDeleteMembership))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)))
         );
 
-        jScrollPane5.setViewportView(jTableMembership);
+        jTabbedPane3.addTab("Manage membership", jPanel25);
 
         jLabel61.setText("search eligible membership by  available credits:");
 
@@ -1678,34 +1688,47 @@ public class Hotel extends javax.swing.JFrame {
             }
         });
 
-        membershipSearchField.setText("100");
+        JTableEligibility.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane9.setViewportView(JTableEligibility);
 
-        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
-        jPanel15.setLayout(jPanel15Layout);
-        jPanel15Layout.setHorizontalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1547, Short.MAX_VALUE)
-            .addGroup(jPanel15Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
+        jPanel26.setLayout(jPanel26Layout);
+        jPanel26Layout.setHorizontalGroup(
+            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel26Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel61)
-                .addGap(58, 58, 58)
-                .addComponent(membershipSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69)
-                .addComponent(jButtonSearchMembershipBy)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 2075, Short.MAX_VALUE)
+                    .addGroup(jPanel26Layout.createSequentialGroup()
+                        .addComponent(jLabel61)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonSearchMembershipBy)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
-        jPanel15Layout.setVerticalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+        jPanel26Layout.setVerticalGroup(
+            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel26Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel61)
-                    .addComponent(jButtonSearchMembershipBy)
-                    .addComponent(membershipSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonSearchMembershipBy))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        jTabbedPane3.addTab("Search eligiblity", jPanel26);
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -1713,20 +1736,15 @@ public class Hotel extends javax.swing.JFrame {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane3)
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
-                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addContainerGap()
+                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Membership", jPanel13);
@@ -1735,7 +1753,7 @@ public class Hotel extends javax.swing.JFrame {
         jPanel18.setLayout(jPanel18Layout);
         jPanel18Layout.setHorizontalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 831, Short.MAX_VALUE)
+            .addGap(0, 271, Short.MAX_VALUE)
         );
         jPanel18Layout.setVerticalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1746,24 +1764,24 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel54.setText("Hotel ID:");
 
-        jButtonInsertMembership1.setText("Insert");
-        jButtonInsertMembership1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInsertBooking.setText("Insert");
+        jButtonInsertBooking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertMembership1ActionPerformed(evt);
+                jButtonInsertBookingActionPerformed(evt);
             }
         });
 
-        jButtonUpdateMembership1.setText("Update");
-        jButtonUpdateMembership1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonUpdateBooking.setText("Update");
+        jButtonUpdateBooking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUpdateMembership1ActionPerformed(evt);
+                jButtonUpdateBookingActionPerformed(evt);
             }
         });
 
-        jButtonDeleteMembership1.setText("Delete");
-        jButtonDeleteMembership1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonDeleteBooking.setText("Delete");
+        jButtonDeleteBooking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDeleteMembership1ActionPerformed(evt);
+                jButtonDeleteBookingActionPerformed(evt);
             }
         });
 
@@ -1800,11 +1818,11 @@ public class Hotel extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel17Layout.createSequentialGroup()
-                        .addComponent(jButtonInsertMembership1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonInsertBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
-                        .addComponent(jButtonUpdateMembership1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonUpdateBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
-                        .addComponent(jButtonDeleteMembership1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButtonDeleteBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel17Layout.createSequentialGroup()
                         .addComponent(jLabel63)
                         .addGap(38, 38, 38)
@@ -1900,9 +1918,9 @@ public class Hotel extends javax.swing.JFrame {
                     .addComponent(jLabel65))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonInsertMembership1)
-                    .addComponent(jButtonUpdateMembership1)
-                    .addComponent(jButtonDeleteMembership1))
+                    .addComponent(jButtonInsertBooking)
+                    .addComponent(jButtonUpdateBooking)
+                    .addComponent(jButtonDeleteBooking))
                 .addContainerGap())
         );
 
@@ -1915,7 +1933,7 @@ public class Hotel extends javax.swing.JFrame {
             .addGroup(jPanel19Layout.createSequentialGroup()
                 .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1291, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel19Layout.setVerticalGroup(
@@ -1976,15 +1994,15 @@ public class Hotel extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                             .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jBookingSearchCheckinDate, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                             .addComponent(jLabel74, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jBookingSearchCheckoutDate, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                             .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jBookingSearchOccupancy, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                             .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel77, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1994,15 +2012,15 @@ public class Hotel extends javax.swing.JFrame {
                                 .addGroup(jPanel20Layout.createSequentialGroup()
                                     .addComponent(jLabel78)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jBookingSearchRangeFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(26, 26, 26)
                                     .addComponent(jLabel79)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jBookingSearchRangeTo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButtonSearchMembershipBy1)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 687, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 1310, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel20Layout.setVerticalGroup(
@@ -2012,15 +2030,15 @@ public class Hotel extends javax.swing.JFrame {
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBookingSearchCheckinDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel23))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBookingSearchCheckoutDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel74))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBookingSearchOccupancy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel75))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2028,9 +2046,9 @@ public class Hotel extends javax.swing.JFrame {
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBookingSearchRangeFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel77)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBookingSearchRangeTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel78)
                     .addComponent(jLabel79))
                 .addGap(18, 18, 18)
@@ -2050,8 +2068,8 @@ public class Hotel extends javax.swing.JFrame {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1830, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -2059,7 +2077,7 @@ public class Hotel extends javax.swing.JFrame {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 83, Short.MAX_VALUE))
+                .addGap(0, 133, Short.MAX_VALUE))
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2072,28 +2090,40 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel66.setText("Booking Number:");
 
-        jButtonInsertMembership2.setText("Insert");
-        jButtonInsertMembership2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInsertPayment.setText("Insert");
+        jButtonInsertPayment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertMembership2ActionPerformed(evt);
+                jButtonInsertPaymentActionPerformed(evt);
             }
         });
 
-        jButtonUpdateMembership2.setText("Update");
-        jButtonUpdateMembership2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonUpdatePayment.setText("Update");
+        jButtonUpdatePayment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUpdateMembership2ActionPerformed(evt);
+                jButtonUpdatePaymentActionPerformed(evt);
             }
         });
 
-        jButtonDeleteMembership2.setText("Delete");
-        jButtonDeleteMembership2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonDeletePayment.setText("Delete");
+        jButtonDeletePayment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDeleteMembership2ActionPerformed(evt);
+                jButtonDeletePaymentActionPerformed(evt);
+            }
+        });
+
+        comboPaymentBookingNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboPaymentBookingNoActionPerformed(evt);
             }
         });
 
         jLabel68.setText("Hotel ID:");
+
+        comboPaymentHotelID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboPaymentHotelIDActionPerformed(evt);
+            }
+        });
 
         jLabel67.setText("Room number:");
 
@@ -2103,7 +2133,7 @@ public class Hotel extends javax.swing.JFrame {
 
         jLabel71.setText("Payment Amount:");
 
-        tfPaymentMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Credit card", "Cash", "PayPal" }));
+        comboPaymentMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Credit card", "Cash", "PayPal" }));
 
         jLabel72.setText(".");
 
@@ -2123,30 +2153,30 @@ public class Hotel extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addComponent(jLabel66, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfPaymentBookingNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(comboPaymentBookingNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addComponent(jLabel68, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfPaymentHotelID, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(comboPaymentHotelID, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addComponent(jLabel67)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(tfPaymentRoomNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(comboPaymentRoomNo, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel22Layout.createSequentialGroup()
                         .addComponent(jLabel69)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(tfPaymentDate, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonInsertMembership2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonInsertPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
-                        .addComponent(jButtonUpdateMembership2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonUpdatePayment, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
-                        .addComponent(jButtonDeleteMembership2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButtonDeletePayment, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addComponent(jLabel70, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                         .addGap(15, 15, 15)
-                        .addComponent(tfPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(comboPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel22Layout.createSequentialGroup()
                         .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel71, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
@@ -2174,14 +2204,14 @@ public class Hotel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel66)
-                    .addComponent(tfPaymentBookingNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboPaymentBookingNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfPaymentHotelID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboPaymentHotelID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel68))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfPaymentRoomNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboPaymentRoomNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel67))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -2190,7 +2220,7 @@ public class Hotel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel70)
-                    .addComponent(tfPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel71)
@@ -2205,9 +2235,9 @@ public class Hotel extends javax.swing.JFrame {
                         .addComponent(jLabel73, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonInsertMembership2)
-                    .addComponent(jButtonUpdateMembership2)
-                    .addComponent(jButtonDeleteMembership2))
+                    .addComponent(jButtonInsertPayment)
+                    .addComponent(jButtonUpdatePayment)
+                    .addComponent(jButtonDeletePayment))
                 .addGap(119, 119, 119))
             .addGroup(jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel22Layout.createSequentialGroup()
@@ -2222,7 +2252,7 @@ public class Hotel extends javax.swing.JFrame {
         jPanel23.setLayout(jPanel23Layout);
         jPanel23Layout.setHorizontalGroup(
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1534, Short.MAX_VALUE)
+            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1551, Short.MAX_VALUE)
         );
         jPanel23Layout.setVerticalGroup(
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2247,11 +2277,11 @@ public class Hotel extends javax.swing.JFrame {
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel21Layout.createSequentialGroup()
                 .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
+                .addGap(0, 123, Short.MAX_VALUE))
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
                 .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Payment", jPanel21);
@@ -2274,74 +2304,110 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonInsertHotelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertHotelActionPerformed
         // TODO add your handling code here:
-        if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
+        try{
+            
+            if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
                 && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
                 && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
                 && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
+                
+                Integer.parseInt(tfHotelId.getText().toString());
+                Integer.parseInt(tfHotelCapacity.getText().toString());
+                Integer.parseInt(tfHotelContactNo.getText().toString());
+
             Statement stmt;
             try {
-
+                
                 stmt = conn.createStatement();
                 stmt.executeUpdate("insert into hotel (HOTEL_ID, HOTEL_NAME, ROOM_CAPACITY,HOTEL_TIER, CONSTRUCTION_YEAR,EMAIL_ADDRESS, CONTACT_NUMBER, ADDRESS,CITY,COUNTRY ) VALUES ('" + tfHotelId.getText() + "','" + tfHotelNAme.getText() + "','" + tfHotelCapacity.getText() + "','" + tfHotelTier.getSelectedItem() + "','" + tfHotelconsyear.getText() + "','" + tfHotelEmail.getText() + "','" + tfHotelContactNo.getText() + "','" + tfHotelAddress.getText() + "','" + tfHotelCity.getText() + "','" + tfHotelCountry.getText() + "')");
                 this.updateHotelTable();
                 JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                stmt.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         } else {
             hotelFieldsErrorMessage.setText("No fields can be empty");
         }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Hotel ID, hotel capacity and contact number have to contain in numbers only");
+        }
+        
     }//GEN-LAST:event_jButtonInsertHotelActionPerformed
 
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
-        // TODO add your handling code here:
-        if (this.jTableHotel.getSelectedRow() < 0) {
-            return;
-        }
-        if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
+        try{
+            Integer.parseInt(tfHotelId.getText().toString());
+            Integer.parseInt(tfHotelCapacity.getText().toString());
+            Integer.parseInt(tfHotelContactNo.getText().toString());
+            if (!tfHotelNAme.getText().trim().equals("") && !tfHotelCapacity.getText().trim().equals("")
                 && !tfHotelEmail.getText().trim().equals("") && !tfHotelId.getText().trim().equals("")
                 && !tfHotelContactNo.getText().trim().equals("") && !tfHotelAddress.getText().trim().equals("")
                 && !tfHotelCity.getText().trim().equals("") && !tfHotelCountry.getText().trim().equals("")) {
-
             Statement stmt;
             try {
-
                 stmt = conn.createStatement();
                 stmt.executeUpdate("update HOTEL set  HOTEL_NAME='" + tfHotelNAme.getText() + "', HOTEL_TIER='" + tfHotelTier.getSelectedItem().toString() + "', CONSTRUCTION_YEAR='" + tfHotelconsyear.getText() + "', ROOM_CAPACITY='" + tfHotelCapacity.getText() + "', EMAIL_ADDRESS='" + tfHotelEmail.getText() + "',CONTACT_NUMBER='" + tfHotelContactNo.getText() + "',  ADDRESS='" + tfHotelAddress.getText() + "',  CITY ='" + tfHotelCity.getText() + "',  COUNTRY='" + tfHotelCountry.getText() + "' where HOTEL_ID='" + tfHotelId.getText() + "'");
-                Hotel_1 hotel = this.hotel_1List.get(this.jTableHotel.getSelectedRow());
-                hotel.setHotelName(tfHotelNAme.getText());
-                this.entityManager.refresh(hotel);
-                updateHotelTable();
-
+                
+                stmt.close();
+                this.updateHotelTable();
                 JOptionPane.showMessageDialog(null, "Updated Successfully!");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
         } else {
-            hotelErrorMessage.setText("No fields can be empty");
+            hotelFieldsErrorMessage.setText("No fields can be empty");
         }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Hotel ID, hotel capacity and contact number have to contain in numbers only");
+        }
+          
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 
     private void updateHotelTable() {
+        
         hotel_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT h FROM Hotel_1 h");
-
         hotel_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : hotel_1Query.getResultList();
+        
+        for(Iterator<Hotel_1> iterator = hotel_1List.iterator(); iterator.hasNext();){
+            entityManager.refresh(iterator.next());
+        }
         tableModel.fireTableDataChanged();
     }
 
     private void updateRoomTable() {
         roomQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT r FROM Room r");
         roomList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : roomQuery.getResultList();
+        for(Iterator<Room> iterator = roomList.iterator(); iterator.hasNext();){
+            entityManager0.refresh(iterator.next());
+        }
         roomTableModel.fireTableDataChanged();
+    }
+    
+        private void updateAvailableRoom() {
+        availableRoomModel.fireTableDataChanged();
     }
 
     private void updateCustomerTable() {
-
-        tableModel.fireTableDataChanged();
+        customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
+        customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
+        customerTableModel.fireTableDataChanged();
     }
+    
+    private void updateGuestTable(){
+        guestQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT g FROM Guest g");
+        guestList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : guestQuery.getResultList();
+        guestTableModel.fireTableDataChanged();
+    } 
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+                int index = jTableHotel.getSelectedRow();
+        if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
+            return;
+        }
         Statement stmt;
         try {
             Statement stmt1 = this.conn2.createStatement();
@@ -2361,8 +2427,11 @@ public class Hotel extends javax.swing.JFrame {
             stmt = conn.createStatement();
 
             stmt.executeUpdate("delete from HOTEL where HOTEL_ID='" + tfHotelId.getText() + "'");
-            updateHotelTable();
+            this.updateHotelTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
+            stmt1.close();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -2374,7 +2443,6 @@ public class Hotel extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             hotel_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT h FROM Hotel_1 h where h.hotelTier = '" + tfHotelTiercombo.getSelectedItem().toString() + "'");
-
             hotel_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : hotel_1Query.getResultList();
             tableModel.fireTableDataChanged();
 
@@ -2390,59 +2458,59 @@ public class Hotel extends javax.swing.JFrame {
     }//GEN-LAST:event_tfHotelTierActionPerformed
 
     private void jButtonInsertRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertRoomActionPerformed
-        // TODO add your handling code here:
-        if (this.jTableRoom.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(null, "No Room Selected!");
-            return;
-        }
+        try{
+            Integer.parseInt(tfRoomId.getText().toString());
 
-        if (!tfRoomId.getText().trim().equals("") && !tfRoomDesc.getText().trim().equals("") && !tfRoomPrice.getText().trim().equals("")) {
-            Room room = new Room();
-            room.setRoomPK(new RoomPK(new BigInteger(tfRoomId.getText()), new BigInteger(tfRoomHotelId.getSelectedItem().toString())));
-            room.setRoomType(jComboBox2.getSelectedItem().toString());
-            room.setRoomDescription(tfRoomDesc.getText());
-            room.setRoomPrice(tfRoomPrice.getText());
-            room.setGuestCapicity(new BigInteger(tfRoomCapacity.getSelectedItem().toString()));
+            if (!tfRoomId.getText().trim().equals("") && !tfRoomDesc.getText().trim().equals("") && !tfRoomPrice.getText().trim().equals("")) {
             Statement stmt;
             try {
-
-                this.entityManager0.getTransaction().begin();
-                this.entityManager0.persist(room);
-
-                this.entityManager0.getTransaction().commit();
-                this.updateRoomTable();
-                JOptionPane.showMessageDialog(null, "Insert Successfully!");
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("INSERT INTO ROOM (ROOM_NUMBER, HOTEL_ID, ROOM_TYPE, ROOM_PRICE, GUEST_CAPICITY,ROOM_DESCRIPTION) VALUES ("+tfRoomId.getText()+", '"+ tfRoomHotelId.getSelectedItem().toString()+"', '"+jComboRoomType.getSelectedItem().toString()+"', '"+ tfRoomPrice.getText()+"','"+tfRoomCapacity.getSelectedItem().toString()+"', '"+ tfRoomDesc.getText()+"')");
+                paymentTableModel.fireTableDataChanged();
+                JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                stmt.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Insert Failed!");
             }
 
-        } else {
-            RoomErrorMessage.setText("No fields can be empty");
-        }
+            } else {
+                RoomErrorMessage.setText("No fields can be empty");
+            }
 
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"  Room ID has  to contain in numbers only");
+        }
+            
     }//GEN-LAST:event_jButtonInsertRoomActionPerformed
 
     private void jButtonUpdateRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateRoomActionPerformed
-        // TODO add your handling code here:
-        if (this.jTableRoom.getSelectedRow() < 0) {
-            JOptionPane.showMessageDialog(null, "No Room Selected!");
-            return;
-        }
-        try {
+        try{
+            Integer.parseInt(tfRoomId.getText());
+            Integer.parseInt(tfRoomCapacity.getSelectedItem().toString());
 
-            this.entityManager0.getTransaction().begin();
-            Room room = this.roomList.get(this.jTableRoom.getSelectedRow());
-            room.setGuestCapicity(new BigInteger(tfRoomCapacity.getSelectedItem().toString()));
-            room.setRoomPrice(tfRoomPrice.getText());
-            room.setRoomDescription(tfRoomDesc.getText());
-            room.setRoomType(jComboBox2.getSelectedItem().toString());
-            this.entityManager0.getTransaction().commit();
-            this.updateRoomTable();
-            JOptionPane.showMessageDialog(null, "Insert Successfully!");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Update Failed!");
+            if (!tfRoomId.getText().trim().equals("") && !tfRoomDesc.getText().trim().equals("") && !tfRoomPrice.getText().trim().equals("")) {
+                Statement stmt;
+                try {
+
+                    stmt = conn2.createStatement();
+                    String sql = "UPDATE ROOM SET ROOM_TYPE='"+this.jComboRoomType.getSelectedItem().toString()+"',ROOM_PRICE='"+ tfRoomPrice.getText()+"',GUEST_CAPICITY="+ tfRoomCapacity.getSelectedItem().toString()+",ROOM_DESCRIPTION='"+ tfRoomDesc.getText()+"' WHERE ROOM_NUMBER = "+ tfRoomId.getText() ;
+                    System.out.println("sql="+sql);
+                    stmt.executeUpdate(sql);
+                    
+                    this.updateRoomTable();
+                    JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                hotelFieldsErrorMessage.setText("No fields can be empty");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"  Room ID, room capacity have to contain in numbers only");
         }
 
     }//GEN-LAST:event_jButtonUpdateRoomActionPerformed
@@ -2471,10 +2539,11 @@ public class Hotel extends javax.swing.JFrame {
                     this.entityManager0.remove(facility);
                 }
             }
-            this.entityManager0.remove(room);
-            this.entityManager0.getTransaction().commit();
-            updateRoomTable();
+            Statement stmt = conn2.createStatement();
+            stmt.executeUpdate("delete from Room where ROOM_NUMBER='" + tfRoomId.getText() + "'");
+            this.updateRoomTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(Hotel.this, "Delete Room Failed.");
@@ -2497,28 +2566,36 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonSearchCutomerByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchCutomerByActionPerformed
         // TODO add your handling code here:
+        Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("SELECT * FROM CUSTOMER WHERE MEMBERSHIP_TIER = '"+ JComboCustomerByMembership.getSelectedItem().toString()+"'");
+                this.updateCustomerTable();
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
     }//GEN-LAST:event_jButtonSearchCutomerByActionPerformed
 
     private void jButtonDeleteCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteCutomerActionPerformed
         // TODO add your handling code here:
         int index = jTableCustomer.getSelectedRow();
         if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
             return;
         }
         try {
             Customer customer = this.customerList.get(index);
             ResultSet set = this.conn2.createStatement().executeQuery("select * from booking where booking_number = "+customer.getCustomerNumber());
             if(set.next()){
-                JOptionPane.showMessageDialog(null, "There are booking related to this customer, not allow to delete.");
+                JOptionPane.showMessageDialog(null, "There are booking related to this customer, not allow to delete. ");
                 return;
             }
-            this.entityManager0.getTransaction().begin();
-            
-            
-            
-            this.entityManager0.getTransaction().commit();
-            
-            JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            Statement stmt = conn2.createStatement();
+            stmt.executeUpdate("delete from CUSTOMER where CUSTOMER_NUMBER='" + tfCustomerID.getText() + "'");
+            this.updateCustomerTable();        
+            JOptionPane.showMessageDialog(null, "Deleted Successfully!");                
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -2526,129 +2603,228 @@ public class Hotel extends javax.swing.JFrame {
 
     private void jButtonUpdateCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateCutomerActionPerformed
         // TODO add your handling code here:
+        
+try{
+            Integer.parseInt(tfCustomerID.getText().toString());
+            Integer.parseInt(tfCustomerContactNo.getText().toString());
+            Integer.parseInt(tfCustomerCredit.getText().toString());
+
+if (this.jTableCustomer.getSelectedRow() < 0) {
+            return;
+        }
+         if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
+                && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
+                && !tfCustomerTitle.getText().trim().equals("")&& !tfCustomerContactNo.getText().trim().equals("")
+                && !tfCustomerEmail.getText().trim().equals("")) {
+            try {
+
+                Statement stmt = conn2.createStatement();
+                stmt.executeUpdate("UPDATE CUSTOMER SET TITLE= '"+ tfCustomerTitle.getText()+"',FIRST_NAME= '"+ tfCustomerFName.getText()+"',LAST_NAME= '"+ tfCustomerLName.getText()+"',PHONE_NUMBER= '"+ tfCustomerContactNo.getText()+"', DOB=  '"+ tfCustomerDOB.getText()+"', EMAIL_ADDRESS = '"+ tfCustomerEmail.getText()+"',MEMBERSHIP_TIER= '"+ comboCustomerMemberTier.getSelectedItem().toString()+"' , MEMBERSHIP_CREDIT= '"+ tfCustomerCredit.getText()+"',  POSTAL_CODE= '"+ tfCustomerPostCode.getText()+"',STREET=  '"+ tfCustomerStreet.getText()+"', CITY= '"+ tfCustomerCity.getText()+"', COUNTRY=  '"+ tfCustomerCuntry.getText()+"'  WHERE CUSTOMER_NUMBER =  '"+ tfCustomerID.getText() +"'");
+                this.updateCustomerTable();
+                JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            hotelErrorMessage.setText("No fields can be empty");
+        }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Customer ID, Contact number and membership credit have to contain in numbers only");
+        }
     }//GEN-LAST:event_jButtonUpdateCutomerActionPerformed
 
     private void jButtonInsertCutomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertCutomerActionPerformed
         // TODO add your handling code here:
+        
+        try{
+            Integer.parseInt(tfCustomerID.getText().toString());
+            Integer.parseInt(tfCustomerContactNo.getText().toString());
+            Integer.parseInt(tfCustomerCredit.getText().toString());
+
+        if (!tfCustomerID.getText().trim().equals("") && !tfCustomerFName.getText().trim().equals("")
+                && !tfCustomerLName.getText().trim().equals("") && !tfCustomerDOB.getText().trim().equals("")
+                && !tfCustomerTitle.getText().trim().equals("")&& !tfCustomerContactNo.getText().trim().equals("")
+                && !tfCustomerEmail.getText().trim().equals("")) {
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("INSERT INTO CUSTOMER (CUSTOMER_NUMBER, TITLE,FIRST_NAME,LAST_NAME,PHONE_NUMBER, DOB, EMAIL_ADDRESS,"
+                        + "MEMBERSHIP_TIER, MEMBERSHIP_CREDIT,  POSTAL_CODE,STREET, CITY, COUNTRY) VALUES"
+                        + "("+ tfCustomerID.getText()+",'"+ tfCustomerTitle.getText()+"','"+ tfCustomerFName.getText()+"', "
+                        + "'"+ tfCustomerLName.getText()+"', '"+ tfCustomerContactNo.getText()+"', "
+                        + "'"+ tfCustomerDOB.getText()+"', '"+ tfCustomerEmail.getText()+"', "
+                        + "'"+ comboCustomerMemberTier.getSelectedItem().toString()+"' , '"+ tfCustomerCredit.getText()+"', '"+ tfCustomerPostCode.getText()+"',"
+                                + "'"+ tfCustomerStreet.getText()+"', '"+ tfCustomerCity.getText()+"', '"+ tfCustomerCuntry.getText()+"')");
+                this.updateCustomerTable();
+                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("No fields can be empty");
+        }
+
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Customer ID, Contact number and membership credit have to contain in numbers only");
+        }
+
     }//GEN-LAST:event_jButtonInsertCutomerActionPerformed
 
     private void comboCustomerMemberTierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboCustomerMemberTierActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboCustomerMemberTierActionPerformed
 
-    private void jButtonSearchCutomerBy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchCutomerBy1ActionPerformed
+    private void jButtonSearchGuestByNAmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchGuestByNAmeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSearchCutomerBy1ActionPerformed
+         if (!tfGuestSearchGuestByNAme.getText().trim().equals("") ) {
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("select * FROM GUEST where upper(FIRST_NAME) =  Upper('"+ tfSearchGuestByName.getText()+"') OR upper(LAST_NAME) =  Upper('"+ tfSearchGuestByName.getText()+"')");
+                updateGuestTable();
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("Enter the name of the guest");
+        }    
+    }//GEN-LAST:event_jButtonSearchGuestByNAmeActionPerformed
 
     private void jButtonDeleteCutomer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteCutomer1ActionPerformed
         // TODO add your handling code here:
-        int index = jTableGuest.getSelectedRow();
+                int index = jTableGuest.getSelectedRow();
+        if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
+            return;
+        }
         Statement stmt;
         try {
 
             stmt = conn2.createStatement();
-            stmt.executeUpdate("delete from DUEST where GUEST_NUMBER=" + tfGuestID.getText());
-            updateRoomTable();
+            stmt.executeUpdate("delete from GUEST where GUEST_NUMBER=" + tfGuestID.getText());
+            this.updateGuestTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_jButtonDeleteCutomer1ActionPerformed
 
-    private void jButtonUpdateCutomer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateCutomer1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonUpdateCutomer1ActionPerformed
-
-    private void jButtonInsertCutomer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertCutomer1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonInsertCutomer1ActionPerformed
-
-    private void jButtonInsertMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembershipActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonInsertMembershipActionPerformed
-
-    private void jButtonUpdateMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateMembershipActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonUpdateMembershipActionPerformed
-
-    private void jButtonDeleteMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembershipActionPerformed
-        // TODO add your handling code here:
-        int index = jTableMembership.getSelectedRow();
-        Statement stmt;
-        try {
-
-            stmt = conn2.createStatement();
-            stmt.executeUpdate("delete from MEMBERSHIP where MEMBERSIP_tier=" + tfMembershipTier.getText());
-            updateRoomTable();
-            JOptionPane.showMessageDialog(null, "Deleted Successfully!");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }//GEN-LAST:event_jButtonDeleteMembershipActionPerformed
-
-    private void jButtonSearchMembershipByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchMembershipByActionPerformed
+    private void jButtonUpdateGuestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateGuestActionPerformed
         // TODO add your handling code here:
         
-        String credit = membershipSearchField.getText();
-        Query query = this.entityManager0.createQuery("select m from Membership m where m.tierCredit <= "+credit);
-        this.membershipList = query.getResultList();
-        membershipTableModel.fireTableDataChanged();
-    }//GEN-LAST:event_jButtonSearchMembershipByActionPerformed
-
-    private void jButtonInsertMembership1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembership1ActionPerformed
-        // TODO add your handling code here:
-        String bookNumber = tfBookingNumber.getText();
-        String checkInDate = tfBookingCheckInDate.getText();
-        String checkoutDate = tfBookingCheckOutDate.getText();
-        String contactEmail = tfBookingContactEmail.getText();
-        String contactPerson = tfBookingContactPerson.getText();
-        String bookingCustNo = tfBookingCustNo.getSelectedItem().toString();
-        String discount = tfBookingDiscount.getText();
-        String hotelId = tfBookingHotelID.getSelectedItem().toString();
-        String paidStatus = tfBookingPaymentStatus.getSelectedItem().toString();
-        String roomNumber = tfBookingRoomNo.getSelectedItem().toString();
-        String totalAmount = tfBookingTotalAmount.getText();
-
-        Booking booking = new Booking(new BookingPK(new BigInteger(bookNumber.toLowerCase()), new BigInteger(hotelId), new BigInteger(roomNumber)));
-        booking.setCheckinDate(checkInDate);
-        booking.setCheckoutDate(checkoutDate);
-        booking.setContactEmail(contactEmail);
-        booking.setContactPerson(contactPerson);
-        booking.setDiscountAmount(new BigInteger(discount));
-        booking.setPaymentStatus(paidStatus);
-        booking.setCustomerNumber(new BigInteger(bookingCustNo));
-        booking.setTotalAmount(new BigInteger(totalAmount));
-
-        try {
-            this.entityManager0.getTransaction().begin();
-            this.entityManager0.persist(booking);
-            Customer customer = this.entityManager0.find(Customer.class, new BigDecimal(bookingCustNo));
-            if (customer != null) {
-                Membership membership = this.entityManager0.find(Membership.class, customer.getMembershipTier());
-                if(membership != null) {
-                    if ("PAID".equalsIgnoreCase(paidStatus)) {
-                        membership.setTierCredit(membership.getTierCredit().add(new BigInteger(50+"")));
-                    } else if ("CANCELED".equalsIgnoreCase(paidStatus)) {
-                        membership.setTierCredit(membership.getTierCredit().subtract(new BigInteger(50+"")));
-                    }
-                }
-            }
-            this.entityManager0.getTransaction().commit();
-            updateBookingTable();
-            JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            JOptionPane.showMessageDialog(Hotel.this, "Insert Booking Failed.");
-
+try{
+            Integer.parseInt(tfGuestID.getText().toString());
+            Integer.parseInt(tfGuestContactNo.getText().toString());
+if (this.jTableGuest.getSelectedRow() < 0) {
+            return;
         }
-    }//GEN-LAST:event_jButtonInsertMembership1ActionPerformed
+        if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
+                && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
+                 && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("") &&
+                 !tfGuestContactNo.getText().trim().equals("") ) {
+
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("UPDATE GUEST set TITLE='"+tfGuestTitle.getText()+"',"
+                        + "FIRST_NAME='"+tfGuestFName.getText()+"',LAST_NAME='"+tfGuestLName.getText()+"',DOB='"+tfGuestDOB.getText()+"',"
+                        + "COUNTRY='"+tfGuestCuntry.getText() +"',CITY='"+ tfGuestCity.getText() +"',STREET='"+tfGuestStreet.getText()+"',"
+                        + "POSTAL_CODE='"+ tfGuestPostCode.getText() +"',PHONE_NUMBER='"+tfGuestContactNo.getText()+"',"
+                        + "EMAIL_ADDRESS='"+tfGuestEmail.getText()+"' where GUEST_NUMBER='"+tfGuestID.getText() + "'");
+                this.updateGuestTable();
+                JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            hotelErrorMessage.setText("No fields can be empty");
+        }
+
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Guest ID and contact number have to contain in numbers only");
+        }
+
+
+    }//GEN-LAST:event_jButtonUpdateGuestActionPerformed
+
+    private void jButtonInsertGuestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertGuestActionPerformed
+        // TODO add your handling code here:
+        try{
+            Integer.parseInt(tfGuestID.getText().toString());
+            Integer.parseInt(tfGuestContactNo.getText().toString());
+ if (!tfGuestID.getText().trim().equals("") && !tfGuestFName.getText().trim().equals("")
+                && !tfGuestLName.getText().trim().equals("") && !tfGuestTitle.getText().trim().equals("")
+                 && !tfGuestDOB.getText().trim().equals("") && !tfGuestEmail.getText().trim().equals("") &&
+                 !tfGuestContactNo.getText().trim().equals("") ) {
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("insert INTO GUEST (GUEST_NUMBER,TITLE,FIRST_NAME,LAST_NAME,DOB,COUNTRY,CITY,STREET,POSTAL_CODE,PHONE_NUMBER,EMAIL_ADDRESS) VALUES ('"+tfGuestID.getText()+"', '"+tfGuestTitle.getText()+"', '"+tfGuestFName.getText()+"','"+tfGuestLName.getText()+"', '"+tfGuestDOB.getText()+"', '"+ tfGuestCuntry.getText() +"', '"+ tfGuestCity.getText() +"','"+ tfGuestStreet.getText() +"','"+ tfGuestPostCode.getText() +"','"+ tfGuestContactNo.getText() +"','"+ tfGuestEmail.getText() +"')");
+                
+                this.updateGuestTable();
+                JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("No fields can be empty");
+        }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Guest ID and contact number have to contain in numbers only");
+        }
+    }//GEN-LAST:event_jButtonInsertGuestActionPerformed
+
+    private void jButtonInsertBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertBookingActionPerformed
+        try{
+            Integer.parseInt(tfBookingNumber.getText().toString());
+            Integer.parseInt(tfBookingContactPerson.getText().toString());
+            Integer.parseInt(tfBookingDiscount.getText().toString());
+            Integer.parseInt(tfBookingTotalAmount.getText().toString());
+            if (!tfBookingNumber.getText().trim().equals("")&& !tfBookingCheckInDate.getText().trim().equals("")
+                     && !tfBookingCheckOutDate.getText().trim().equals("")&& ! tfBookingContactPerson.getText().trim().equals("")
+                     && !tfBookingContactEmail.getText().trim().equals("") && !tfBookingTotalAmount.getText().trim().equals("")
+                     && !tfBookingDiscount.getText().trim().equals("")
+                     ) {
+                Statement stmt;
+                try {
+                    stmt = conn2.createStatement();
+                    stmt.executeUpdate("INSERT INTO BOOKING (BOOKING_NUMBER, CUSTOMER_NUMBER,  HOTEL_ID, ROOM_NUMBER, CHECKIN_DATE, CHECKOUT_DATE, CONTACT_PERSON, "
+                            + "CONTACT_EMAIL, TOTAL_AMOUNT,DISCOUNT_AMOUNT, PAYMENT_STATUS) VALUES (" + tfBookingNumber.getText()+", " 
+                            + tfBookingCustNo.getSelectedItem().toString()+", '" + tfBookingHotelID.getSelectedItem().toString()+"', " 
+                            + tfBookingRoomNo.getSelectedItem().toString()+", '" + tfBookingCheckInDate.getText()+"', '" + tfBookingCheckOutDate.getText()+"', "
+                            + tfBookingContactPerson.getText()+"', '" + tfBookingContactEmail.getText()+"', " + tfBookingTotalAmount.getText()+","
+                            + tfBookingDiscount.getText()+", '" + tfBookingPaymentStatus.getSelectedItem().toString()+"')");
+                    this.updateBookingTable();
+                    JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                    stmt.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JCustomerErrorMsg.setText("No fields can be empty");
+            }
+ 
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Booking ID, contact person, discount and total amount have to contain numbers only");
+        }
+
+    }//GEN-LAST:event_jButtonInsertBookingActionPerformed
 
     private void updateBookingTable(){
         bookingQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT b FROM Booking b");
         bookingList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : bookingQuery.getResultList();
         bookingTableModel.fireTableDataChanged();
-        updateMembershipTable();
     }
 
     private void updateMembershipTable(){
@@ -2656,8 +2832,28 @@ public class Hotel extends javax.swing.JFrame {
         membershipList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : membershipQuery.getResultList();
         membershipTableModel.fireTableDataChanged();
     }
+    
+    private void updateElegibiliyTable(){
+        customerQuery2 = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT c FROM Customer c");
+        customerList2 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery2.getResultList();
+        eligibilityTableModel.fireTableDataChanged();
+    }
+    
+    private void updatePaymentTable(){
+         paymentQuery = java.beans.Beans.isDesignTime() ? null : entityManager0.createQuery("SELECT p FROM Payment p");
+        paymentList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : paymentQuery.getResultList();
+        paymentTableModel.fireTableDataChanged();
+    }
 
-    private void jButtonUpdateMembership1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateMembership1ActionPerformed
+    private void jButtonUpdateBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateBookingActionPerformed
+
+
+        try{
+            Integer.parseInt(tfBookingNumber.getText().toString());
+            Integer.parseInt(tfBookingContactPerson.getText().toString());
+            Integer.parseInt(tfBookingDiscount.getText().toString());
+            Integer.parseInt(tfBookingTotalAmount.getText().toString());
+
         // TODO add your handling code here:
         String bookNumber = tfBookingNumber.getText();
         String checkInDate = tfBookingCheckInDate.getText();
@@ -2704,99 +2900,112 @@ public class Hotel extends javax.swing.JFrame {
 
         }
 
-    }//GEN-LAST:event_jButtonUpdateMembership1ActionPerformed
 
-    private void jButtonDeleteMembership1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembership1ActionPerformed
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Booking ID, contact person, discount and total amount have to contain numbers only");
+        }
+
+    }//GEN-LAST:event_jButtonUpdateBookingActionPerformed
+
+    private void jButtonDeleteBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteBookingActionPerformed
         int index = jTableBooking.getSelectedRow();
-        Statement stmt;
+        if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
+            return;
+        }        Statement stmt;
         try {
 
             stmt = conn2.createStatement();
             stmt.executeUpdate("delete from BOOKING where BOOKING_NUMBER=" + tfBookingNumber.getText());
-            updateRoomTable();
+            updateBookingTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }//GEN-LAST:event_jButtonDeleteMembership1ActionPerformed
+    }//GEN-LAST:event_jButtonDeleteBookingActionPerformed
 
     private void jButtonSearchMembershipBy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchMembershipBy1ActionPerformed
         // TODO add your handling code here:
-        String checkInDate = this.jTextField1.getText();
-        String checkOutDate = this.jTextField2.getText();
-        String occupany = this.jTextField3.getText();
-        String roomType = this.jComboBox1.getSelectedItem().toString();
-        String rangeFrom = this.jTextField5.getText();
-        String rangeTo = this.jTextField6.getText();
-        Statement stmt;
-        try {
-            stmt = conn2.createStatement();
-            StringBuilder sql = new StringBuilder();
-            sql.append("select distinct r.ROOM_NUMBER, r.HOTEL_ID, r.ROOM_TYPE, r.ROOM_PRICE, r.GUEST_CAPICITY, r.ROOM_DESCRIPTION, b.CHECKIN_DATE,b.CHECKOUT_DATE from BOOKING b, ROOM r where r.ROOM_TYPE =  '" + roomType + "' ");
-            if (!occupany.isEmpty()) {
-                sql.append(" and r.GUEST_CAPICITY = " + occupany);
-            }
-            if (!rangeFrom.isEmpty()) {
-                sql.append(" and r.ROOM_PRICE >= " + rangeFrom);
-            }
-            if (!rangeTo.isEmpty()) {
-                sql.append(" and r.ROOM_PRICE <= " + rangeTo);
-            }
-            long searchedCheckIn = 0;
-            long searchedCheckOut = 0;
-            if (!checkInDate.isEmpty()) {
-                if (!validateDateFormat(checkInDate)) {
-                    return;
+        try{
+            Integer.parseInt(jBookingSearchOccupancy.getText().toString());
+            Integer.parseInt(jBookingSearchRangeFrom.getText().toString());
+            Integer.parseInt(jBookingSearchRangeTo.getText().toString());
+            String checkInDate = this.jBookingSearchCheckinDate.getText();
+            String checkOutDate = this.jBookingSearchCheckoutDate.getText();
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                StringBuilder sql = new StringBuilder();
+                sql.append("select distinct r.ROOM_NUMBER, r.HOTEL_ID, r.ROOM_TYPE, r.ROOM_PRICE, r.GUEST_CAPICITY, r.ROOM_DESCRIPTION, b.CHECKIN_DATE,b.CHECKOUT_DATE from BOOKING b, ROOM r where r.ROOM_TYPE =  '" + jComboBox1.getSelectedItem().toString() + "' ");
+                if (!jBookingSearchOccupancy.getText().isEmpty()) {
+                    sql.append(" and r.GUEST_CAPICITY = " + jBookingSearchOccupancy.getText());
                 }
-                searchedCheckIn = getTimeInMillisecondFromString(checkInDate);
-            }
-            if (!checkOutDate.isEmpty()) {
-                if (!validateDateFormat(checkOutDate)) {
-                    return;
+                if (!jBookingSearchRangeFrom.getText().isEmpty()) {
+                    sql.append(" and r.ROOM_PRICE >= " + jBookingSearchRangeFrom.getText());
                 }
-                searchedCheckOut = getTimeInMillisecondFromString(checkOutDate);
-            }
-            if (searchedCheckIn > searchedCheckOut) {
-                JOptionPane.showMessageDialog(Hotel.this, "Checkin Date must less than checkout date");
-                return;
-            }
-//            sql.append(" and r.ROOM_NUMBER NOT in (\n" +
-//                    "    SELECT b.ROOM_NUMBER\n" +
-//                    "    FROM BOOKING b )");
-            System.out.println("search book sql " + sql);
-            ResultSet resultSet = stmt.executeQuery(sql.toString());
-            this.availableRoomList.clear();
-            while (resultSet.next()) {
-                int roomNumber = resultSet.getInt(1);
-                int hotelId = resultSet.getInt(2);
-                String rType = resultSet.getString(3);
-                double price = resultSet.getDouble(4);
-                int capicity = resultSet.getInt(5);
-                String description = resultSet.getString(6);
-                Date d;
-                if (searchedCheckIn > 0) {
-                    long checkinTime = getTimeInMillisecondFromString(resultSet.getString(7));
-                    long checkOutTime = getTimeInMillisecondFromString(resultSet.getString(8));
-                    if (searchedCheckIn < checkOutTime && searchedCheckIn > checkinTime
-                            || searchedCheckOut > checkinTime && searchedCheckOut < checkOutTime
-                            || searchedCheckOut <= checkinTime && searchedCheckIn >= checkOutTime
-                            || searchedCheckIn <= checkinTime && searchedCheckOut >= checkOutTime) {
-                        continue;
+                if (!jBookingSearchRangeTo.getText().isEmpty()) {
+                    sql.append(" and r.ROOM_PRICE <= " + jBookingSearchRangeTo.getText());
+                }
+                long searchedCheckIn = 0;
+                long searchedCheckOut = 0;
+                if (!checkInDate.isEmpty()) {
+                    if (!validateDateFormat(checkInDate)) {
+                        return;
                     }
+                    searchedCheckIn = getTimeInMillisecondFromString(checkInDate);
+                }
+                if (!checkOutDate.isEmpty()) {
+                    if (!validateDateFormat(checkOutDate)) {
+                        return;
+                    }
+                    searchedCheckOut = getTimeInMillisecondFromString(checkOutDate);
+                }
+                if (searchedCheckIn > searchedCheckOut) {
+                    JOptionPane.showMessageDialog(Hotel.this, "Checkin Date must less than checkout date");
+                    return;
                 }
 
-                Room room = new Room(new RoomPK(new BigInteger(roomNumber + ""),
-                        new BigInteger(hotelId + "")), rType, price + "");
-                room.setGuestCapicity(new BigInteger(String.valueOf(capicity)));
-                room.setRoomDescription(description);
-                availableRoomList.add(room);
-            }
-//            updateRoomTable();
-            availableRoomModel.fireTableDataChanged();
+                ResultSet resultSet = stmt.executeQuery(sql.toString());
+                this.availableRoomList.clear();
+                while (resultSet.next()) {
+                    int roomNumber = resultSet.getInt(1);
+                    int hotelId = resultSet.getInt(2);
+                    String rType = resultSet.getString(3);
+                    double price = resultSet.getDouble(4);
+                    int capicity = resultSet.getInt(5);
+                    String description = resultSet.getString(6);
+                    Date d;
+                    if (searchedCheckIn > 0) {
+                        long checkinTime = getTimeInMillisecondFromString(resultSet.getString(7));
+                        long checkOutTime = getTimeInMillisecondFromString(resultSet.getString(8));
+                        if (searchedCheckIn < checkOutTime && searchedCheckIn > checkinTime
+                                || searchedCheckOut > checkinTime && searchedCheckOut < checkOutTime
+                                || searchedCheckOut <= checkinTime && searchedCheckIn >= checkOutTime
+                                || searchedCheckIn <= checkinTime && searchedCheckOut >= checkOutTime) {
+                            continue;
+                        }
+                    }
+
+                    Room room = new Room(new RoomPK(new BigInteger(roomNumber + ""),
+                            new BigInteger(hotelId + "")), rType, price + "");
+                    room.setGuestCapicity(new BigInteger(String.valueOf(capicity)));
+                    room.setRoomDescription(description);
+                    availableRoomList.add(room);
+                    updateAvailableRoom();
+                }
+    //            updateRoomTable();
+                availableRoomModel.fireTableDataChanged();
+                stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
+        }
 
     }//GEN-LAST:event_jButtonSearchMembershipBy1ActionPerformed
 
@@ -2812,40 +3021,85 @@ public class Hotel extends javax.swing.JFrame {
         return checkinTime;
     }
 
-    private boolean validateDateFormat(String checkInDate) {
+    private boolean validateDateFormat(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            format.parse(checkInDate);
+            format.parse(date);
             return true;
         } catch (ParseException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(Hotel.this, "Incorrect date format.");
+            JOptionPane.showMessageDialog(Hotel.this, "Incorrect date format date has to be in this format YYYY-mm-dd.");
         }
         return false;
     }
 
-    private void jButtonInsertMembership2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembership2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonInsertMembership2ActionPerformed
+    private void jButtonInsertPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertPaymentActionPerformed
+try{
+            Integer.parseInt(tfPaymentNo.getText().toString());
+            Integer.parseInt(tfPaymentAmount.getText().toString());
+ if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("") ) {
+            try {
+                Statement stmt = conn2.createStatement();
+                stmt.executeUpdate("INSERT INTO PAYMENT (PAYMENT_NUMBER,BOOKING_NUMBER, HOTEL_ID, ROOM_NUMBER,  PAYMENT_DATE, PAYMENT_METHOD, PAYMENT_AMOUNT) "
+                        + "VALUES ('"+ tfPaymentNo.getText() +"','"+ comboPaymentBookingNo.getSelectedItem().toString()+"','"+ comboPaymentHotelID.getSelectedItem().toString()+
+                        "',"+ comboPaymentRoomNo.getSelectedItem().toString()+", '"+ tfPaymentDate.getText() +"', '"+ comboPaymentMethod.getSelectedItem().toString()+"', "+ tfPaymentAmount.getText() +")");
+                this.updatePaymentTable();
+                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("No fields can be empty");
+        }
 
-    private void jButtonUpdateMembership2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateMembership2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonUpdateMembership2ActionPerformed
 
-    private void jButtonDeleteMembership2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembership2ActionPerformed
-        // TODO add your handling code here:
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
+        }
+       
+    }//GEN-LAST:event_jButtonInsertPaymentActionPerformed
+
+    private void jButtonUpdatePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdatePaymentActionPerformed
+        try{
+            Integer.parseInt(tfPaymentNo.getText().toString());
+            Integer.parseInt(tfPaymentAmount.getText().toString());
+        if (!tfPaymentNo.getText().trim().equals("") && !tfPaymentDate.getText().trim().equals("") && !tfPaymentAmount.getText().trim().equals("") ) {
+            try {
+                Statement stmt = conn2.createStatement();
+                stmt.executeUpdate("UPDATE PAYMENT SET PAYMENT_NUMBER="+ tfPaymentNo.getText()+", BOOKING_NUMBER= "+ comboPaymentBookingNo.getSelectedItem().toString() +" ,HOTEL_ID = "+ comboPaymentHotelID.getSelectedItem().toString() +" ,ROOM_NUMBER = "+ comboPaymentRoomNo.getSelectedItem().toString() +" ,PAYMENT_DATE='"+ tfPaymentDate.getText() +"', PAYMENT_METHOD ='"+ comboPaymentMethod.getSelectedItem().toString()+"', PAYMENT_AMOUNT = "+ tfPaymentAmount.getText() +" where PAYMENT_NUMBER =" + tfPaymentNo.getText());
+                this.updatePaymentTable();
+                JOptionPane.showMessageDialog(null, "updated Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("No fields can be empty");
+        }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Occupancy, range from, and range to feilds have to contain numbers only");
+        }
+    }//GEN-LAST:event_jButtonUpdatePaymentActionPerformed
+
+    private void jButtonDeletePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeletePaymentActionPerformed
         int index = jTablePayment.getSelectedRow();
+        if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
+            return;
+        }
         Statement stmt;
         try {
 
             stmt = conn2.createStatement();
             stmt.executeUpdate("delete from PAYMENT where PAYMENT_NUMBER=" + tfPaymentNo.getText());
-            updateRoomTable();
+            updatePaymentTable();
             JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }//GEN-LAST:event_jButtonDeleteMembership2ActionPerformed
+    }//GEN-LAST:event_jButtonDeletePaymentActionPerformed
 
     private void tfRoomHotelIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRoomHotelIdActionPerformed
         // TODO add your handling code here:
@@ -2857,6 +3111,7 @@ public class Hotel extends javax.swing.JFrame {
 
     private void tfHotelIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfHotelIdActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_tfHotelIdActionPerformed
 
     private void tfRoomCapacityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRoomCapacityActionPerformed
@@ -2875,6 +3130,117 @@ public class Hotel extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_tfBookingHotelIDActionPerformed
+
+    private void jButtonSearchMembershipByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSearchMembershipByActionPerformed
+        // TODO add your handling code here:
+        Statement stmt;
+        try {
+            stmt = conn2.createStatement();
+            stmt.executeUpdate("select distinct CUSTOMER.*  from MEMBERSHIP ,CUSTOMER  where MEMBERSHIP.TIER_CREDIT <= CUSTOMER.MEMBERSHIP_CREDIT ");
+            //this.updateElegibiliyTable();
+            stmt.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jButtonSearchMembershipByActionPerformed
+
+    private void jButtonDeleteMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMembershipActionPerformed
+        // TODO add your handling code here:
+
+        int index = jTableMembership.getSelectedRow();
+        if(index<0){
+            JOptionPane.showMessageDialog(null, "Choose a record before deleting. ");
+            return;
+        }        Statement stmt;
+        try {
+
+            stmt = conn2.createStatement();
+            stmt.executeUpdate("delete from MEMBERSHIP where MEMBERSHIP_TIER= '" + tfMembershipTier.getText() + "'");
+            updateMembershipTable();
+            JOptionPane.showMessageDialog(null, "Deleted Successfully!");
+            stmt.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jButtonDeleteMembershipActionPerformed
+
+    private void jButtonUpdateMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateMembershipActionPerformed
+     try{
+            Integer.parseInt(tfMembershipCredit.toString());
+            Integer.parseInt(tfMembershipDiscount.toString());
+
+            if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("") &&
+                 !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("") ){
+            try {
+
+                Statement stmt = conn2.createStatement();
+                stmt.executeUpdate("UPDATE MEMBERSHIP SET MEMBERSHIP_TIER= '"+ tfMembershipTier.getText() +"', TIER_CREDIT="+ tfMembershipCredit.getText() +" , DISCOUNT='"+ tfMembershipDiscount.getText() +" ', REWARD='"+ tfMembershipRewards.getText() +" '  WHERE MEMBERSHIP_TIER= '"+ tfMembershipTier.getText() +"' ");
+                this.updateMembershipTable();
+                JOptionPane.showMessageDialog(null, "Updated Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            } else {
+                hotelErrorMessage.setText("No fields can be empty");
+            }
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null," Membership credit and discount have to contain numbers only");
+        }             
+    }//GEN-LAST:event_jButtonUpdateMembershipActionPerformed
+
+    private void jButtonInsertMembershipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertMembershipActionPerformed
+        
+    try{
+        Integer.parseInt(tfMembershipCredit.getText().toString());
+        Integer.parseInt(tfMembershipDiscount.getText().toString());
+
+        if (!tfMembershipCredit.getText().trim().equals("") && !tfMembershipDiscount.getText().trim().equals("") &&
+            !tfMembershipRewards.getText().trim().equals("") && !tfMembershipTier.getText().trim().equals("") && tfMembershipTier.getText().toString().equals("")) {
+            Statement stmt;
+            try {
+                stmt = conn2.createStatement();
+                stmt.executeUpdate("INSERT INTO MEMBERSHIP (MEMBERSHIP_TIER, TIER_CREDIT, DISCOUNT, REWARD) VALUES ('"+ tfMembershipTier.getText() +"', "+ tfMembershipCredit.getText() +", '"+ tfMembershipDiscount.getText() +"', '"+ tfMembershipRewards.getText() +"')");
+                this.updateMembershipTable();
+                JOptionPane.showMessageDialog(null, "Inserted Successfully!");
+                stmt.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            JCustomerErrorMsg.setText("No fields can be empty");
+        }
+
+       }catch(Exception e){
+           JOptionPane.showMessageDialog(null," Membership credit and discount have to contain numbers only");
+       }
+
+    }//GEN-LAST:event_jButtonInsertMembershipActionPerformed
+
+    private void comboPaymentHotelIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPaymentHotelIDActionPerformed
+
+    }//GEN-LAST:event_comboPaymentHotelIDActionPerformed
+
+    private void comboPaymentBookingNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPaymentBookingNoActionPerformed
+            // TODO add your handling code here:
+            
+            String bookingNo = comboPaymentBookingNo.getSelectedItem().toString();
+            comboPaymentHotelID.removeAllItems();
+            comboPaymentRoomNo.removeAllItems();
+            for (Iterator<Booking> iterator = this.bookingList.iterator(); iterator.hasNext(); ) {
+                Booking b = iterator.next();
+                if (b.getBookingPK().getBookingNumber().toString().equals(bookingNo)) {
+                    comboPaymentHotelID.addItem(b.getBookingPK().getHotelId().toString());
+                    comboPaymentRoomNo.addItem(b.getBookingPK().getRoomNumber().toString());
+                }
+            }
+            }//GEN-LAST:event_comboPaymentBookingNoActionPerformed
+
+    private void tfHotelIdPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tfHotelIdPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfHotelIdPropertyChange
 
     /**
      * @param args the command line arguments
@@ -2911,274 +3277,7 @@ public class Hotel extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel RoomErrorMessage;
-    private java.util.List<finalhbs.Booking> bookingList;
-    private javax.persistence.Query bookingQuery;
-    private javax.swing.JComboBox<String> comboCustomerMemberTier;
-    private java.util.List<finalhbs.Customer> customerList;
-    private java.util.List<finalhbs.Customer> customerList1;
-    private javax.persistence.Query customerQuery;
-    private javax.persistence.Query customerQuery1;
-    private javax.persistence.EntityManager entityManager;
-    private javax.persistence.EntityManager entityManager0;
-    private javax.persistence.EntityManager entityManager1;
-    private java.util.List<finalhbs.Guest> guestList;
-    private javax.persistence.Query guestQuery;
-    private javax.swing.JLabel hotelErrorMessage;
-    private javax.swing.JLabel hotelFieldsErrorMessage;
-    private javax.swing.JLabel hotelFieldsErrorMessage1;
-    private javax.swing.JLabel hotelFieldsErrorMessage2;
-    private javax.swing.JLabel hotelFieldsErrorMessage3;
-    private javax.swing.JLabel hotelFieldsErrorMessage4;
-    private javax.swing.JLabel hotelFieldsErrorMessage5;
-    private javax.swing.JLabel hotelFieldsErrorMessage6;
-    private java.util.List<finalhbs.Hotel_1> hotel_1List;
-    private java.util.List<finalhbs.Hotel_1> hotel_1List1;
-    private javax.persistence.Query hotel_1Query;
-    private javax.persistence.Query hotel_1Query1;
-    private javax.swing.JButton jButtonDelete;
-    private javax.swing.JButton jButtonDeleteCutomer;
-    private javax.swing.JButton jButtonDeleteCutomer1;
-    private javax.swing.JButton jButtonDeleteMembership;
-    private javax.swing.JButton jButtonDeleteMembership1;
-    private javax.swing.JButton jButtonDeleteMembership2;
-    private javax.swing.JButton jButtonDeleteRoom;
-    private javax.swing.JButton jButtonInsertCutomer;
-    private javax.swing.JButton jButtonInsertCutomer1;
-    private javax.swing.JButton jButtonInsertHotel;
-    private javax.swing.JButton jButtonInsertMembership;
-    private javax.swing.JButton jButtonInsertMembership1;
-    private javax.swing.JButton jButtonInsertMembership2;
-    private javax.swing.JButton jButtonInsertRoom;
-    private javax.swing.JButton jButtonSearchCutomerBy;
-    private javax.swing.JButton jButtonSearchCutomerBy1;
-    private javax.swing.JButton jButtonSearchHotelBy;
-    private javax.swing.JButton jButtonSearchMembershipBy;
-    private javax.swing.JButton jButtonSearchMembershipBy1;
-    private javax.swing.JButton jButtonSearchRoomBy;
-    private javax.swing.JButton jButtonUpdate;
-    private javax.swing.JButton jButtonUpdateCutomer;
-    private javax.swing.JButton jButtonUpdateCutomer1;
-    private javax.swing.JButton jButtonUpdateMembership;
-    private javax.swing.JButton jButtonUpdateMembership1;
-    private javax.swing.JButton jButtonUpdateMembership2;
-    private javax.swing.JButton jButtonUpdateRoom;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JLabel jLabel36;
-    private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel41;
-    private javax.swing.JLabel jLabel42;
-    private javax.swing.JLabel jLabel43;
-    private javax.swing.JLabel jLabel44;
-    private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel46;
-    private javax.swing.JLabel jLabel47;
-    private javax.swing.JLabel jLabel48;
-    private javax.swing.JLabel jLabel49;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel50;
-    private javax.swing.JLabel jLabel51;
-    private javax.swing.JLabel jLabel52;
-    private javax.swing.JLabel jLabel53;
-    private javax.swing.JLabel jLabel54;
-    private javax.swing.JLabel jLabel55;
-    private javax.swing.JLabel jLabel56;
-    private javax.swing.JLabel jLabel57;
-    private javax.swing.JLabel jLabel58;
-    private javax.swing.JLabel jLabel59;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel60;
-    private javax.swing.JLabel jLabel61;
-    private javax.swing.JLabel jLabel62;
-    private javax.swing.JLabel jLabel63;
-    private javax.swing.JLabel jLabel64;
-    private javax.swing.JLabel jLabel65;
-    private javax.swing.JLabel jLabel66;
-    private javax.swing.JLabel jLabel67;
-    private javax.swing.JLabel jLabel68;
-    private javax.swing.JLabel jLabel69;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel70;
-    private javax.swing.JLabel jLabel71;
-    private javax.swing.JLabel jLabel72;
-    private javax.swing.JLabel jLabel73;
-    private javax.swing.JLabel jLabel74;
-    private javax.swing.JLabel jLabel75;
-    private javax.swing.JLabel jLabel76;
-    private javax.swing.JLabel jLabel77;
-    private javax.swing.JLabel jLabel78;
-    private javax.swing.JLabel jLabel79;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel20;
-    private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel22;
-    private javax.swing.JPanel jPanel23;
-    private javax.swing.JPanel jPanel24;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTableBooking;
-    private javax.swing.JTable jTableCustomer;
-    private javax.swing.JTable jTableGuest;
-    private javax.swing.JTable jTableHotel;
-    private javax.swing.JTable jTableMembership;
-    private javax.swing.JTable jTablePayment;
-    private javax.swing.JTable jTableRoom;
-    private javax.swing.JTable jTableShowAvailableroom;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private java.util.List<finalhbs.Membership> membershipList;
-    private javax.persistence.Query membershipQuery;
-    private javax.swing.JTextField membershipSearchField;
-    private java.util.List<finalhbs.Payment> paymentList;
-    private java.util.List<finalhbs.Facility> facilityList;
-    private javax.persistence.Query paymentQuery;
-    private javax.persistence.Query facilityQuery;
-    private java.util.List<finalhbs.Room> roomList;
-    private java.util.List<finalhbs.Room> roomList1;
-    private java.util.List<finalhbs.Room> roomList2;
-    private java.util.List<finalhbs.Room> roomList3;
-    private java.util.List<finalhbs.Room> roomList4;
-    private java.util.List<finalhbs.Room> roomList5;
-    private java.util.List<finalhbs.Room> availableRoomList;
-    private javax.persistence.Query roomQuery;
-    private javax.persistence.Query roomQuery1;
-    private javax.persistence.Query roomQuery2;
-    private javax.persistence.Query roomQuery3;
-    private javax.persistence.Query roomQuery4;
-    private javax.persistence.Query roomQuery5;
-    private javax.swing.JTextField tfBookingCheckInDate;
-    private javax.swing.JTextField tfBookingCheckOutDate;
-    private javax.swing.JTextField tfBookingContactEmail;
-    private javax.swing.JTextField tfBookingContactPerson;
-    private javax.swing.JComboBox<String> tfBookingCustNo;
-    private javax.swing.JTextField tfBookingDiscount;
-    private javax.swing.JComboBox<String> tfBookingHotelID;
-    private javax.swing.JTextField tfBookingNumber;
-    private javax.swing.JComboBox<String> tfBookingPaymentStatus;
-    private javax.swing.JComboBox<String> tfBookingRoomNo;
-    private javax.swing.JTextField tfBookingTotalAmount;
-    private javax.swing.JTextField tfCustomerCity;
-    private javax.swing.JTextField tfCustomerContactNo;
-    private javax.swing.JTextField tfCustomerCredit;
-    private javax.swing.JTextField tfCustomerCuntry;
-    private javax.swing.JTextField tfCustomerDOB;
-    private javax.swing.JTextField tfCustomerEmail;
-    private javax.swing.JTextField tfCustomerFName;
-    private javax.swing.JTextField tfCustomerID;
-    private javax.swing.JTextField tfCustomerLName;
-    private javax.swing.JTextField tfCustomerPostCode;
-    private javax.swing.JTextField tfCustomerStreet;
-    private javax.swing.JTextField tfCustomerTitle;
-    private javax.swing.JTextField tfGuestCity;
-    private javax.swing.JTextField tfGuestContactNo;
-    private javax.swing.JTextField tfGuestCuntry;
-    private javax.swing.JTextField tfGuestDOB;
-    private javax.swing.JTextField tfGuestEmail;
-    private javax.swing.JTextField tfGuestFName;
-    private javax.swing.JTextField tfGuestID;
-    private javax.swing.JTextField tfGuestLName;
-    private javax.swing.JTextField tfGuestPostCode;
-    private javax.swing.JTextField tfGuestStreet;
-    private javax.swing.JTextField tfGuestTitle;
-    private javax.swing.JTextField tfHotelAddress;
-    private javax.swing.JTextField tfHotelCapacity;
-    private javax.swing.JTextField tfHotelCity;
-    private javax.swing.JTextField tfHotelContactNo;
-    private javax.swing.JTextField tfHotelCountry;
-    private javax.swing.JTextField tfHotelEmail;
-    private javax.swing.JTextField tfHotelId;
-    private javax.swing.JTextField tfHotelNAme;
-    private javax.swing.JComboBox<String> tfHotelTier;
-    private javax.swing.JComboBox<String> tfHotelTiercombo;
-    private javax.swing.JComboBox<String> tfHotelTiercombo1;
-    private javax.swing.JTextField tfHotelconsyear;
-    private javax.swing.JTextField tfMembershipCredit;
-    private javax.swing.JTextField tfMembershipDiscount;
-    private javax.swing.JTextField tfMembershipRewards;
-    private javax.swing.JTextField tfMembershipTier;
-    private javax.swing.JTextField tfPaymentAmount;
-    private javax.swing.JComboBox<String> tfPaymentBookingNo;
-    private javax.swing.JTextField tfPaymentDate;
-    private javax.swing.JComboBox<String> tfPaymentHotelID;
-    private javax.swing.JComboBox<String> tfPaymentMethod;
-    private javax.swing.JTextField tfPaymentNo;
-    private javax.swing.JComboBox<String> tfPaymentRoomNo;
-    private javax.swing.JComboBox<String> tfRoomCapacity;
-    private javax.swing.JTextField tfRoomDesc;
-    private javax.swing.JComboBox<String> tfRoomFacilityCombo;
-    private javax.swing.JComboBox<String> tfRoomHotelId;
-    private javax.swing.JTextField tfRoomId;
-    private javax.swing.JTextField tfRoomPrice;
-    private javax.swing.JTextField tfSearchGuestByName;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
-    // End of variables declaration//GEN-END:variables
-
+    
     class HotelTableModel extends AbstractTableModel {
 
         String columns[] = {"ID", "Name", "Tier", "Room Capacity", "Construction Year", "Address", "Country", "City", "Email", "Contact No."};
@@ -3422,7 +3521,7 @@ public class Hotel extends javax.swing.JFrame {
 
     class BookingTableModel extends AbstractTableModel {
 
-        private String columns[] = {"CUSTOMER_NUMBER", "CHECKIN_DATE", "CHECKOUT_DATE",
+        private String columns[] = {"Booking No","customer No","Hotel ID","Room No", "CHECKIN_DATE", "CHECKOUT_DATE",
                 "CONTACT_PERSON", "CONTACT_EMAIL", "TOTAL_AMOUNT", "DISCOUNT_AMOUNT", "PAYMENT_STATUS"};
 
         @Override
@@ -3445,20 +3544,26 @@ public class Hotel extends javax.swing.JFrame {
             Booking booking = bookingList.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return booking.getCustomerNumber();
+                    return booking.getBookingPK().getBookingNumber();
                 case 1:
-                    return booking.getCheckinDate();
+                    return booking.getBookingPK().getHotelId();
                 case 2:
-                    return booking.getCheckoutDate();
+                    return booking.getBookingPK().getRoomNumber();
                 case 3:
-                    return booking.getContactPerson();
+                    return booking.getCustomerNumber();
                 case 4:
-                    return booking.getContactEmail();
+                    return booking.getCheckinDate();
                 case 5:
-                    return booking.getTotalAmount();
+                    return booking.getCheckoutDate();
                 case 6:
-                    return booking.getDiscountAmount();
+                    return booking.getContactPerson();
                 case 7:
+                    return booking.getContactEmail();
+                case 8:
+                    return booking.getTotalAmount();
+                case 9:
+                    return booking.getDiscountAmount();
+                case 10:
                     return booking.getPaymentStatus();
 
             }
@@ -3509,5 +3614,333 @@ public class Hotel extends javax.swing.JFrame {
         }
 
     }
+
+    class EligibilityTableModel extends AbstractTableModel {
+
+    private String columns[] = {"CUSTOMER_NUMBER", "TITLE", "FIRST_NAME", "LAST_NAME", "PHONE_NUMBER", "DOB", "EMAIL_ADDRESS", "MEMBERSHIP_CREDIT",
+            "MEMBERSHIP_TIER", "POSTAL_CODE", "STREET", "CITY", "COUNTRY"};
+
+    @Override
+    public int getRowCount() {
+        return customerList.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columns.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columns[column];
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        Customer customer = customerList.get(rowIndex);
+        switch (columnIndex) {
+            case 0:
+                return customer.getCustomerNumber();
+            case 1:
+                return customer.getTitle();
+            case 2:
+                return customer.getFirstName();
+            case 3:
+                return customer.getLastName();
+            case 4:
+                return customer.getPhoneNumber();
+            case 5:
+                return customer.getDob();
+            case 6:
+                return customer.getEmailAddress();
+            case 7:
+                return customer.getMembershipCredit();
+            case 8:
+                return customer.getMembershipTier();
+            case 9:
+                return customer.getPostalCode();
+            case 10:
+                return customer.getStreet();
+            case 11:
+                return customer.getCity();
+            case 12:
+                return customer.getCountry();
+        }
+        return null;
+    }
+
+}
+
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> JComboCustomerByMembership;
+    private javax.swing.JLabel JCustomerErrorMsg;
+    private javax.swing.JTable JTableEligibility;
+    private javax.swing.JLabel RoomErrorMessage;
+    private java.util.List<finalhbs.Room> availableRoomList;
+    private java.util.List<finalhbs.Booking> bookingList;
+    private javax.persistence.Query bookingQuery;
+    private javax.swing.JComboBox<String> comboCustomerMemberTier;
+    private javax.swing.JComboBox<String> comboPaymentBookingNo;
+    private javax.swing.JComboBox<String> comboPaymentHotelID;
+    private javax.swing.JComboBox<String> comboPaymentMethod;
+    private javax.swing.JComboBox<String> comboPaymentRoomNo;
+    private java.util.List<finalhbs.Customer> customerList;
+    private java.util.List<finalhbs.Customer> customerList1;
+    private java.util.List<finalhbs.Customer> customerList2;
+    private javax.persistence.Query customerQuery;
+    private javax.persistence.Query customerQuery1;
+    private javax.persistence.Query customerQuery2;
+    private javax.persistence.EntityManager entityManager;
+    private javax.persistence.EntityManager entityManager0;
+    private javax.persistence.EntityManager entityManager1;
+    private java.util.List<finalhbs.Facility> facilityList;
+    private javax.persistence.Query facilityQuery;
+    private java.util.List<finalhbs.Guest> guestList;
+    private javax.persistence.Query guestQuery;
+    private javax.swing.JLabel hotelErrorMessage;
+    private javax.swing.JLabel hotelFieldsErrorMessage;
+    private javax.swing.JLabel hotelFieldsErrorMessage1;
+    private javax.swing.JLabel hotelFieldsErrorMessage2;
+    private javax.swing.JLabel hotelFieldsErrorMessage3;
+    private javax.swing.JLabel hotelFieldsErrorMessage5;
+    private javax.swing.JLabel hotelFieldsErrorMessage6;
+    private java.util.List<finalhbs.Hotel_1> hotel_1List;
+    private java.util.List<finalhbs.Hotel_1> hotel_1List1;
+    private javax.persistence.Query hotel_1Query;
+    private javax.persistence.Query hotel_1Query1;
+    private javax.swing.JTextField jBookingSearchCheckinDate;
+    private javax.swing.JTextField jBookingSearchCheckoutDate;
+    private javax.swing.JTextField jBookingSearchOccupancy;
+    private javax.swing.JTextField jBookingSearchRangeFrom;
+    private javax.swing.JTextField jBookingSearchRangeTo;
+    private javax.swing.JButton jButtonDelete;
+    private javax.swing.JButton jButtonDeleteBooking;
+    private javax.swing.JButton jButtonDeleteCutomer;
+    private javax.swing.JButton jButtonDeleteCutomer1;
+    private javax.swing.JButton jButtonDeleteMembership;
+    private javax.swing.JButton jButtonDeletePayment;
+    private javax.swing.JButton jButtonDeleteRoom;
+    private javax.swing.JButton jButtonInsertBooking;
+    private javax.swing.JButton jButtonInsertCutomer;
+    private javax.swing.JButton jButtonInsertGuest;
+    private javax.swing.JButton jButtonInsertHotel;
+    private javax.swing.JButton jButtonInsertMembership;
+    private javax.swing.JButton jButtonInsertPayment;
+    private javax.swing.JButton jButtonInsertRoom;
+    private javax.swing.JButton jButtonSearchCutomerBy;
+    private javax.swing.JButton jButtonSearchGuestByNAme;
+    private javax.swing.JButton jButtonSearchHotelBy;
+    private javax.swing.JButton jButtonSearchMembershipBy;
+    private javax.swing.JButton jButtonSearchMembershipBy1;
+    private javax.swing.JButton jButtonSearchRoomBy;
+    private javax.swing.JButton jButtonUpdate;
+    private javax.swing.JButton jButtonUpdateBooking;
+    private javax.swing.JButton jButtonUpdateCutomer;
+    private javax.swing.JButton jButtonUpdateGuest;
+    private javax.swing.JButton jButtonUpdateMembership;
+    private javax.swing.JButton jButtonUpdatePayment;
+    private javax.swing.JButton jButtonUpdateRoom;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboRoomType;
+    private javax.swing.JLabel jGuestErrorMsg;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel45;
+    private javax.swing.JLabel jLabel46;
+    private javax.swing.JLabel jLabel47;
+    private javax.swing.JLabel jLabel49;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel50;
+    private javax.swing.JLabel jLabel51;
+    private javax.swing.JLabel jLabel52;
+    private javax.swing.JLabel jLabel53;
+    private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
+    private javax.swing.JLabel jLabel56;
+    private javax.swing.JLabel jLabel57;
+    private javax.swing.JLabel jLabel58;
+    private javax.swing.JLabel jLabel59;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel60;
+    private javax.swing.JLabel jLabel61;
+    private javax.swing.JLabel jLabel62;
+    private javax.swing.JLabel jLabel63;
+    private javax.swing.JLabel jLabel64;
+    private javax.swing.JLabel jLabel65;
+    private javax.swing.JLabel jLabel66;
+    private javax.swing.JLabel jLabel67;
+    private javax.swing.JLabel jLabel68;
+    private javax.swing.JLabel jLabel69;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel70;
+    private javax.swing.JLabel jLabel71;
+    private javax.swing.JLabel jLabel72;
+    private javax.swing.JLabel jLabel73;
+    private javax.swing.JLabel jLabel74;
+    private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
+    private javax.swing.JLabel jLabel77;
+    private javax.swing.JLabel jLabel78;
+    private javax.swing.JLabel jLabel79;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
+    private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel25;
+    private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JTable jTableBooking;
+    private javax.swing.JTable jTableCustomer;
+    private javax.swing.JTable jTableGuest;
+    private javax.swing.JTable jTableHotel;
+    private javax.swing.JTable jTableMembership;
+    private javax.swing.JTable jTablePayment;
+    private javax.swing.JTable jTableRoom;
+    private javax.swing.JTable jTableShowAvailableroom;
+    private java.util.List<finalhbs.Membership> membershipList;
+    private javax.persistence.Query membershipQuery;
+    private java.util.List<finalhbs.Payment> paymentList;
+    private javax.persistence.Query paymentQuery;
+    private java.util.List<finalhbs.Room> roomList;
+    private java.util.List<finalhbs.Room> roomList1;
+    private java.util.List<finalhbs.Room> roomList2;
+    private java.util.List<finalhbs.Room> roomList3;
+    private java.util.List<finalhbs.Room> roomList4;
+    private java.util.List<finalhbs.Room> roomList5;
+    private javax.persistence.Query roomQuery;
+    private javax.persistence.Query roomQuery1;
+    private javax.persistence.Query roomQuery2;
+    private javax.persistence.Query roomQuery3;
+    private javax.persistence.Query roomQuery4;
+    private javax.persistence.Query roomQuery5;
+    private javax.persistence.Query roomQuery6;
+    private javax.swing.JTextField tfBookingCheckInDate;
+    private javax.swing.JTextField tfBookingCheckOutDate;
+    private javax.swing.JTextField tfBookingContactEmail;
+    private javax.swing.JTextField tfBookingContactPerson;
+    private javax.swing.JComboBox<String> tfBookingCustNo;
+    private javax.swing.JTextField tfBookingDiscount;
+    private javax.swing.JComboBox<String> tfBookingHotelID;
+    private javax.swing.JTextField tfBookingNumber;
+    private javax.swing.JComboBox<String> tfBookingPaymentStatus;
+    private javax.swing.JComboBox<String> tfBookingRoomNo;
+    private javax.swing.JTextField tfBookingTotalAmount;
+    private javax.swing.JTextField tfCustomerCity;
+    private javax.swing.JTextField tfCustomerContactNo;
+    private javax.swing.JTextField tfCustomerCredit;
+    private javax.swing.JTextField tfCustomerCuntry;
+    private javax.swing.JTextField tfCustomerDOB;
+    private javax.swing.JTextField tfCustomerEmail;
+    private javax.swing.JTextField tfCustomerFName;
+    private javax.swing.JTextField tfCustomerID;
+    private javax.swing.JTextField tfCustomerLName;
+    private javax.swing.JTextField tfCustomerPostCode;
+    private javax.swing.JTextField tfCustomerStreet;
+    private javax.swing.JTextField tfCustomerTitle;
+    private javax.swing.JTextField tfGuestCity;
+    private javax.swing.JTextField tfGuestContactNo;
+    private javax.swing.JTextField tfGuestCuntry;
+    private javax.swing.JTextField tfGuestDOB;
+    private javax.swing.JTextField tfGuestEmail;
+    private javax.swing.JTextField tfGuestFName;
+    private javax.swing.JTextField tfGuestID;
+    private javax.swing.JTextField tfGuestLName;
+    private javax.swing.JTextField tfGuestPostCode;
+    private javax.swing.JLabel tfGuestSearchGuestByNAme;
+    private javax.swing.JTextField tfGuestStreet;
+    private javax.swing.JTextField tfGuestTitle;
+    private javax.swing.JTextField tfHotelAddress;
+    private javax.swing.JTextField tfHotelCapacity;
+    private javax.swing.JTextField tfHotelCity;
+    private javax.swing.JTextField tfHotelContactNo;
+    private javax.swing.JTextField tfHotelCountry;
+    private javax.swing.JTextField tfHotelEmail;
+    private javax.swing.JTextField tfHotelId;
+    private javax.swing.JTextField tfHotelNAme;
+    private javax.swing.JComboBox<String> tfHotelTier;
+    private javax.swing.JComboBox<String> tfHotelTiercombo;
+    private javax.swing.JTextField tfHotelconsyear;
+    private javax.swing.JTextField tfMembershipCredit;
+    private javax.swing.JTextField tfMembershipDiscount;
+    private javax.swing.JTextField tfMembershipRewards;
+    private javax.swing.JTextField tfMembershipTier;
+    private javax.swing.JTextField tfPaymentAmount;
+    private javax.swing.JTextField tfPaymentDate;
+    private javax.swing.JTextField tfPaymentNo;
+    private javax.swing.JComboBox<String> tfRoomCapacity;
+    private javax.swing.JTextField tfRoomDesc;
+    private javax.swing.JComboBox<String> tfRoomFacilityCombo;
+    private javax.swing.JComboBox<String> tfRoomHotelId;
+    private javax.swing.JTextField tfRoomId;
+    private javax.swing.JTextField tfRoomPrice;
+    private javax.swing.JTextField tfSearchGuestByName;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
 
 }
